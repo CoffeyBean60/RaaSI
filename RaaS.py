@@ -10,13 +10,28 @@ primary_service = "google.com"
 
 
 def setup():
+    response = os.system("vboxmanage startvm --type headless Network")
+    pattern = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
+    flag = False
+    lines = response.split("\n")
+    myip = ""
+    for line in lines:
+        if lines.startswith("2"):
+            flag = True
+        if lines.startswith("inet "):
+            myip = pattern.search(line)[0]
+    original_stdout = sys.stdout
+    with open("/storage/ips", 'a') as f:
+        sys.stdout = f  # Change the standard output to the file we created.
+        print(myip)
+        sys.stdout = original_stdout  # Reset the standard output to its original value
     print("setup")
     connected = check_ping(primary_service)
     role = ""
-    file = "RoleFile.txt"
+    file = "~/RoleFile.txt"
     if connected:
         role = "Assigner\n"
-        neighbors = find_neighbors()
+        neighbors = find_neighbors(myip)
         print("Waiting for cameras to boot up...")
         time.sleep(10)
         for neighbor in neighbors:
@@ -29,7 +44,7 @@ def setup():
         print(assigner)
         role += "Assigner: " + assigner[0] + "\n"
         role += "Assigned at: " + str(millisec)
-        file = "RoleFile.txt"
+        file = "~/RoleFile.txt"
 
     original_stdout = sys.stdout
     with open(file, 'w') as f:
@@ -83,28 +98,21 @@ def check_ping(hostname):
     return pingstatus
 
 
-def find_neighbors():
+def find_neighbors(myip):
     print("findNeighbors")
-    output = subprocess.check_output(("arp", "-a"))
-    output = parse_neighbors(output.decode("ascii"))
-    print(output)
-    return output
-    # method used for finding all the neighboring nodes to the assigner
-
-
-def parse_neighbors(neighbors):
     result = []
-    pattern = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
-    lines = neighbors.split("\n")
-    for line in lines:
-        if line.startswith('Interface: '):
-            result.append(pattern.search(line)[0])
+    with open("/storage/ips", "r") as f:
+        for lines in f:
+            if lines.strip() != myip:
+                result.append(lines.stip())
+    print(result)
     return result
+    # method used for finding all the neighboring nodes to the assigner
 
 
 def check_setup():
     print("check_setup")
-    if os.path.exists("RoleFile.txt"):
+    if os.path.exists("~/RoleFile.txt"):
         print("setup done")
         return True
     else:
@@ -175,7 +183,7 @@ def new_assigner(time_stamp):
     # file = /storage/poll
 
     if assigner:
-        file = "RoleFile.txt"
+        file = "~/RoleFile.txt"
         role = "Assigner\n"
         neighbors = find_neighbors()
         print("Waiting for cameras to boot up...")
@@ -198,7 +206,7 @@ def new_assigner(time_stamp):
         print(assigner)
         role += "Assigner: " + assigner[0] + "\n"
         role += "Assigned at: " + str(millisec)
-        file = "RoleFile.txt"
+        file = "~/RoleFile.txt"
         original_stdout = sys.stdout
         with open(file, 'w') as f:
             sys.stdout = f  # Change the standard output to the file we created.
@@ -227,7 +235,7 @@ def init_camera(assigner):
 def get_neighbors():
     result = []
     pattern = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
-    with open("RoleFile.txt", "r") as f:
+    with open("~/RoleFile.txt", "r") as f:
         for line in f:
             if line.startswith('Interface: '):
                 result.append(pattern.search(line)[0])
@@ -235,7 +243,7 @@ def get_neighbors():
 
 
 if __name__ == '__main__':
-    file = "RoleFile.txt"
+    file = "~/RoleFile.txt"
     # run setup
     if not check_setup():
         file = setup()
