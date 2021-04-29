@@ -28,6 +28,7 @@ def setup():
     original_stdout = sys.stdout
     with open("/storage/ips", 'a') as f:
         sys.stdout = f  # Change the standard output to the file we created.
+        print(myip)
         sys.stdout = original_stdout  # Reset the standard output to its original value
     print("setup")
     connected = check_ping(primary_service)
@@ -38,8 +39,9 @@ def setup():
         print("Waiting for cameras to boot up...")
         time.sleep(10)
         for neighbor in neighbors:
-            message_camera(neighbor, "")
-            role += "Interface: " + neighbor + "\n"
+            if neighbor != myip:
+                message_camera(neighbor, "")
+                role += "Interface: " + neighbor + "\n"
     else:
         role = "Camera\n"
         assigner = find_assigner()
@@ -105,7 +107,7 @@ def find_neighbors(myip):
     result = []
     with open("/storage/ips", "r") as f:
         for lines in f:
-            result.append(lines.stip())
+            result.append(lines.strip())
     print(result)
     return result
     # method used for finding all the neighboring nodes to the assigner
