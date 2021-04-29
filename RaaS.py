@@ -6,20 +6,25 @@ import socket
 import time
 import threading
 
-primary_service = "google.com"
+primary_service = "192.168.10.113"
 
 
 def setup():
-    response = os.system("vboxmanage startvm --type headless Network")
+    response = subprocess.check_output(("ip","a"))
     pattern = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
     flag = False
     lines = response.split("\n")
     myip = ""
     for line in lines:
-        if lines.startswith("2"):
+        if line.startswith("2"):
             flag = True
-        if lines.startswith("inet "):
-            myip = pattern.search(line)[0]
+        if flag and "inet " in line:
+            print(line)
+            aa = pattern.search(line)
+            if aa:
+              myip = aa.group()
+            print(myip)
+            flag = False
     original_stdout = sys.stdout
     with open("/storage/ips", 'a') as f:
         sys.stdout = f  # Change the standard output to the file we created.
@@ -103,8 +108,7 @@ def find_neighbors(myip):
     result = []
     with open("/storage/ips", "r") as f:
         for lines in f:
-            if lines.strip() != myip:
-                result.append(lines.stip())
+            result.append(lines.stip())
     print(result)
     return result
     # method used for finding all the neighboring nodes to the assigner
