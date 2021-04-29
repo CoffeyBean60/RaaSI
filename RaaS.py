@@ -1,4 +1,5 @@
 import os
+from os.path import expanduser
 import subprocess
 import sys
 import re
@@ -6,7 +7,8 @@ import socket
 import time
 import threading
 
-primary_service = "192.168.10.113"
+primary_service = "192.168.7.113"
+file = expanduser("~") + "/RoleFile.txt"
 
 
 def setup():
@@ -19,21 +21,17 @@ def setup():
         if line.startswith("2"):
             flag = True
         if flag and "inet " in line:
-            print(line)
             aa = pattern.search(line)
             if aa:
               myip = aa.group()
-            print(myip)
             flag = False
     original_stdout = sys.stdout
     with open("/storage/ips", 'a') as f:
         sys.stdout = f  # Change the standard output to the file we created.
-        print(myip)
         sys.stdout = original_stdout  # Reset the standard output to its original value
     print("setup")
     connected = check_ping(primary_service)
     role = ""
-    file = "~/RoleFile.txt"
     if connected:
         role = "Assigner\n"
         neighbors = find_neighbors(myip)
@@ -49,7 +47,6 @@ def setup():
         print(assigner)
         role += "Assigner: " + assigner[0] + "\n"
         role += "Assigned at: " + str(millisec)
-        file = "~/RoleFile.txt"
 
     original_stdout = sys.stdout
     with open(file, 'w') as f:
@@ -116,7 +113,7 @@ def find_neighbors(myip):
 
 def check_setup():
     print("check_setup")
-    if os.path.exists("~/RoleFile.txt"):
+    if os.path.exists(file):
         print("setup done")
         return True
     else:
@@ -187,7 +184,6 @@ def new_assigner(time_stamp):
     # file = /storage/poll
 
     if assigner:
-        file = "~/RoleFile.txt"
         role = "Assigner\n"
         neighbors = find_neighbors()
         print("Waiting for cameras to boot up...")
@@ -195,7 +191,6 @@ def new_assigner(time_stamp):
         for neighbor in neighbors:
             message_camera(neighbor, "")
             role += "Interface: " + neighbor + "\n"
-        print("hello")
         original_stdout = sys.stdout
         with open(file, 'w') as f:
             sys.stdout = f  # Change the standard output to the file we created.
@@ -210,7 +205,6 @@ def new_assigner(time_stamp):
         print(assigner)
         role += "Assigner: " + assigner[0] + "\n"
         role += "Assigned at: " + str(millisec)
-        file = "~/RoleFile.txt"
         original_stdout = sys.stdout
         with open(file, 'w') as f:
             sys.stdout = f  # Change the standard output to the file we created.
@@ -239,7 +233,7 @@ def init_camera(assigner):
 def get_neighbors():
     result = []
     pattern = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
-    with open("~/RoleFile.txt", "r") as f:
+    with open(file, "r") as f:
         for line in f:
             if line.startswith('Interface: '):
                 result.append(pattern.search(line)[0])
@@ -247,7 +241,6 @@ def get_neighbors():
 
 
 if __name__ == '__main__':
-    file = "~/RoleFile.txt"
     # run setup
     if not check_setup():
         file = setup()
