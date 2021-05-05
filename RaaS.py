@@ -7,7 +7,7 @@ import socket
 import time
 import threading
 
-primary_service = "192.168.7.113"
+primary_service = "192.168.7.148"
 file = expanduser("~") + "/RoleFile.txt"
 
 
@@ -29,7 +29,7 @@ def setup():
     print("setup")
     connected = check_ping(primary_service)
     role = ""
-    if connected and os.path.exists('/storage/ips') and not does_assigner_exist():
+    if connected and not os.path.exists('/storage/ips') or (os.path.exists('storage/ips') and not does_assigner_exist()):
         original_stdout = sys.stdout
         with open("/storage/ips", 'a') as f:
             sys.stdout = f  # Change the standard output to the file we created.
@@ -38,7 +38,6 @@ def setup():
         role = "Assigner\n"
         neighbors = find_neighbors(myip)
         print("Waiting for cameras to boot up...")
-        time.sleep(10)
         for neighbor in neighbors:
             if neighbor != myip:
                 role += "Interface: " + neighbor + "\n"
@@ -51,8 +50,7 @@ def setup():
         role = "Camera\n"
         assigner = find_assigner()
         millisec = time.time() * 1000
-        print(assigner)
-        role += "Assigner: " + assigner[0] + "\n"
+        role += "Assigner: " + assigner + "\n"
         role += "Assigned at: " + str(millisec)
 
     original_stdout = sys.stdout
@@ -158,8 +156,8 @@ def assigner_monitor(neighbors):
 def camera_monitor():
     print("camera_monitor")
     print("Executing Command: ")
-    response = os.system("vboxmanage startvm --type headless Network")
-    print("vboxmanage startvm --type headless Network")
+    response = os.system("vboxmanage startvm --type headless net")
+    print("vboxmanage startvm --type headless net")
 
 
 def init_assigner(neighbors):
@@ -189,6 +187,7 @@ def check_assigner_life(assigner, time_stamp):
         if not check_ping(assigner):
             print("assigner down")
             break
+    new_assigner(time_stamp)
 
 
 def new_assigner(time_stamp):
@@ -320,3 +319,4 @@ if __name__ == '__main__':
         y = threading.Thread(target=check_assigner_life, args=(assigner, time_stamp,))
         x.start()
         y.start()
+
