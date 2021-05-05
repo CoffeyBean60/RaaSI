@@ -15,7 +15,8 @@ def setup():
     response = subprocess.check_output(("ip","a"))
     pattern = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
     flag = False
-    lines = response.split("\n")
+    response = response.decode('UTF-8')
+    lines = response.split('\n')
     myip = ""
     for line in lines:
         if line.startswith("2"):
