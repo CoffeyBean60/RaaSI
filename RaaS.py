@@ -12,7 +12,7 @@ file = expanduser("~") + "/RoleFile.txt"
 
 
 def setup():
-    response = subprocess.check_output(("ip","a"))
+    response = subprocess.check_output(("ip", "a"))
     pattern = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
     flag = False
     response = response.decode('UTF-8')
@@ -24,26 +24,30 @@ def setup():
         if flag and "inet " in line:
             aa = pattern.search(line)
             if aa:
-              myip = aa.group()
+                myip = aa.group()
             flag = False
-    original_stdout = sys.stdout
-    with open("/storage/ips", 'a') as f:
-        sys.stdout = f  # Change the standard output to the file we created.
-        print(myip)
-        sys.stdout = original_stdout  # Reset the standard output to its original value
     print("setup")
     connected = check_ping(primary_service)
     role = ""
-    if connected:
+    if connected and not does_assigner_exist():
+        original_stdout = sys.stdout
+        with open("/storage/ips", 'a') as f:
+            sys.stdout = f  # Change the standard output to the file we created.
+            print(myip, " Assigner")
+            sys.stdout = original_stdout  # Reset the standard output to its original value
         role = "Assigner\n"
         neighbors = find_neighbors(myip)
         print("Waiting for cameras to boot up...")
         time.sleep(10)
         for neighbor in neighbors:
             if neighbor != myip:
-                message_camera(neighbor, "")
                 role += "Interface: " + neighbor + "\n"
     else:
+        original_stdout = sys.stdout
+        with open("/storage/ips", 'a') as f:
+            sys.stdout = f  # Change the standard output to the file we created.
+            print(myip)
+            sys.stdout = original_stdout  # Reset the standard output to its original value
         role = "Camera\n"
         assigner = find_assigner()
         millisec = time.time() * 1000
@@ -74,19 +78,29 @@ def message_camera(ip, message):
 
 
 def find_assigner():
-    assigner_ip = ""
-    s = socket.socket()
-    port = 12345
-    s.bind(('', port))
-    s.listen(5)
-    while True:
-        # Establish connection with client.
-        c, addr = s.accept()
-        print('Got connection from', addr)
-        assigner_ip = addr
-        c.close()
-        break
-    return assigner_ip
+    print("findAssigner")
+    assigner_id = ""
+    while assigner_id == "":
+        print("looking for assigner")
+        with open("/storage/ips", "r") as f:
+            for lines in f:
+                if len(lines.strip().split(" ")) > 1:
+                    assigner_id = lines.strip().split(" ")[0]
+        time.sleep(10)
+    return assigner_id
+    # assigner_ip = ""
+    # s = socket.socket()
+    # port = 12345
+    # s.bind(('', port))
+    # s.listen(5)
+    # while True:
+    #    # Establish connection with client.
+    #    c, addr = s.accept()
+    #    print('Got connection from', addr)
+    #    assigner_ip = addr
+    #    c.close()
+    #    break
+    # return assigner_ip
 
 
 def check_ping(hostname):
@@ -103,12 +117,22 @@ def check_ping(hostname):
     return pingstatus
 
 
+def does_assigner_exist():
+    print("doesAssignerExist")
+    flag = False
+    with open("/storage/ips", "r") as f:
+        for lines in f:
+            if len(lines.strip().split(" ")) > 1:
+                flag = True
+    return flag
+
+
 def find_neighbors(myip):
     print("findNeighbors")
     result = []
     with open("/storage/ips", "r") as f:
         for lines in f:
-            result.append(lines.strip())
+            result.append(lines.strip().split(" ")[0])
     print(result)
     return result
     # method used for finding all the neighboring nodes to the assigner
@@ -166,8 +190,24 @@ def check_assigner_life(assigner, time_stamp):
             print("assigner down")
             break
 
+
 def new_assigner(time_stamp):
     print("assigning new assigner")
+    os.remove("/storage/ips")
+    response = subprocess.check_output(("ip", "a"))
+    pattern = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
+    flag = False
+    response = response.decode('UTF-8')
+    lines = response.split('\n')
+    myip = ""
+    for line in lines:
+        if line.startswith("2"):
+            flag = True
+        if flag and "inet " in line:
+            aa = pattern.search(line)
+            if aa:
+                myip = aa.group()
+            flag = False
 
     original_stdout = sys.stdout
     with open("/storage/poll", 'a') as f:
@@ -187,6 +227,11 @@ def new_assigner(time_stamp):
     # file = /storage/poll
 
     if assigner:
+        original_stdout = sys.stdout
+        with open("/storage/ips", 'a') as f:
+            sys.stdout = f  # Change the standard output to the file we created.
+            print(myip, " Assigner")
+            sys.stdout = original_stdout  # Reset the standard output to its original value
         role = "Assigner\n"
         neighbors = find_neighbors()
         print("Waiting for cameras to boot up...")
@@ -201,7 +246,13 @@ def new_assigner(time_stamp):
             sys.stdout = original_stdout  # Reset the standard output to its original value
         neighbors = get_neighbors()
         init_assigner(neighbors)
-    else: # if not assigner
+    else:  # if not assigner
+
+        original_stdout = sys.stdout
+        with open("/storage/ips", 'a') as f:
+            sys.stdout = f  # Change the standard output to the file we created.
+            print(myip)
+            sys.stdout = original_stdout  # Reset the standard output to its original value
         role = "Camera\n"
         assigner = find_assigner()
         millisec = time.time() * 1000
@@ -266,6 +317,6 @@ if __name__ == '__main__':
                 if line.startswith("Assigned at: "):
                     time_stamp = line.split(" ")[1]
         x = threading.Thread(target=init_camera, args=(assigner,))
-        y = threading.Thread(target=check_assigner_life, args=(assigner,time_stamp,))
+        y = threading.Thread(target=check_assigner_life, args=(assigner, time_stamp,))
         x.start()
         y.start()
