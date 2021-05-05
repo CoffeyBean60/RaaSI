@@ -29,7 +29,7 @@ def setup():
     print("setup")
     connected = check_ping(primary_service)
     role = ""
-    if connected and not does_assigner_exist():
+    if connected and os.path.exists('/storage/ips') and not does_assigner_exist():
         original_stdout = sys.stdout
         with open("/storage/ips", 'a') as f:
             sys.stdout = f  # Change the standard output to the file we created.
