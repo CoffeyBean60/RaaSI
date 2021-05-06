@@ -36,7 +36,7 @@ def setup():
             print(myip, " Assigner")
             sys.stdout = original_stdout  # Reset the standard output to its original value
         role = "Assigner\n"
-        neighbors = find_neighbors(myip)
+        neighbors = find_neighbors()
         print("Waiting for cameras to boot up...")
         for neighbor in neighbors:
             if neighbor != myip:
@@ -125,7 +125,7 @@ def does_assigner_exist():
     return flag
 
 
-def find_neighbors(myip):
+def find_neighbors():
     print("findNeighbors")
     result = []
     with open("/storage/ips", "r") as f:
@@ -217,7 +217,7 @@ def new_assigner(time_stamp):
     time.sleep(5)
     assigner = True
     # look at all time_stamps in the file
-    with open("/storage/poll", 'w') as f:
+    with open("/storage/poll", 'r') as f:
         for lines in f:
             if float(lines.strip()) < float(time_stamp):
                 assigner = False
@@ -243,7 +243,10 @@ def new_assigner(time_stamp):
             sys.stdout = f  # Change the standard output to the file we created.
             print(role)
             sys.stdout = original_stdout  # Reset the standard output to its original value
-        neighbors = get_neighbors()
+        neighbors = []
+        for n in find_neighbors():
+            if n != myip:
+                neighbors.append(n)
         init_assigner(neighbors)
     else:  # if not assigner
 
@@ -266,6 +269,59 @@ def new_assigner(time_stamp):
         check_assigner_life(assigner[0], str(millisec))
 
 
+def check_allowed_people(person):
+    flag = False
+    with open('/storage/allowed', 'r') as f:
+        for lines in f:
+            if person == lines:
+                flag = True
+    return flag
+
+
+def monitor_camera():
+    print("monitorCamera")
+    response = subprocess.check_output(("ip", "a"))
+    pattern = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
+    flag = False
+    response = response.decode('UTF-8')
+    lines = response.split('\n')
+    myip = ""
+    for line in lines:
+        if line.startswith("2"):
+            flag = True
+        if flag and "inet " in line:
+            aa = pattern.search(line)
+            if aa:
+                myip = aa.group()
+            flag = False
+    s = socket.socket()
+    port = 12345
+    s.bind(('', port))
+    s.listen(5)
+    while True:
+        c, addr = s.accept()
+        try:
+            print('Got connection from', addr)
+            while True:
+                  print("herheheheheh")
+                  message = c.recv(1024)
+       #          message = message.decode('utf-8')
+                  if message:
+                       print(message)
+                       print("hello")
+                       original_stdout = sys.stdout
+                       if check_allowed_people(message) and message != 'begin':
+                           with open('/storage/warning', 'a') as f:
+            	               sys.stdout = f  # Change the standard output to the file we created.
+            	               print('WARNING: ', message, 'has passed by a camera at ', myip)
+            	               sys.stdout = original_stdout  # Reset the standard output to its original value
+                  else:
+                        print("no more data")
+                        break
+        finally:
+             c.close()
+                
+
 def init_camera(assigner):
     print("init_camera")
     s = socket.socket()
@@ -280,17 +336,7 @@ def init_camera(assigner):
         if msg.decode("utf-8").startswith("begin"):
             c.close()
             break
-    camera_monitor()
-
-
-def get_neighbors():
-    result = []
-    pattern = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
-    with open(file, "r") as f:
-        for line in f:
-            if line.startswith('Interface: '):
-                result.append(pattern.search(line)[0])
-    return result
+    monitor_camera()
 
 
 if __name__ == '__main__':
@@ -301,10 +347,28 @@ if __name__ == '__main__':
     with open(file, "r") as f:
         role = f.readline()
 
+    response = subprocess.check_output(("ip", "a"))
+    pattern = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
+    flag = False
+    response = response.decode('UTF-8')
+    lines = response.split('\n')
+    myip = ""
+    for line in lines:
+        if line.startswith("2"):
+            flag = True
+        if flag and "inet " in line:
+            aa = pattern.search(line)
+            if aa:
+                myip = aa.group()
+            flag = False
+            
     if role.startswith("Assigner"):
-        neighbors = get_neighbors()
+        neighbors = []
+        for n in find_neighbors():
+            if n != myip:
+                neighbors.append(n)
         x = threading.Thread(target=init_assigner, args=(neighbors,))
-        y = threading.Thread(target=init_camera, args=("127.0.0.1",))
+        y = threading.Thread(target=camera_monitor)
         x.start()
         y.start()
     else:
