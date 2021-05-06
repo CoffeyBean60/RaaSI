@@ -6,6 +6,7 @@ import re
 import socket
 import time
 import threading
+import time
 
 primary_service = "192.168.7.148"
 file = expanduser("~") + "/RoleFile.txt"
@@ -271,9 +272,9 @@ def new_assigner(time_stamp):
 
 def check_allowed_people(person):
     flag = False
-    with open('/storage/allowed', 'r') as f:
+    with open('/storage/allow', 'r') as f:
         for lines in f:
-            if person == lines:
+            if person.strip() == lines.strip():
                 flag = True
     return flag
 
@@ -293,30 +294,29 @@ def monitor_camera():
             aa = pattern.search(line)
             if aa:
                 myip = aa.group()
-            flag = False
+            flag = False             
     s = socket.socket()
-    port = 12345
+    port = 12346
     s.bind(('', port))
     s.listen(5)
     while True:
         c, addr = s.accept()
         try:
             print('Got connection from', addr)
+            t = time.localtime()
+            current_time = time.strftime("%H:%M:%S", t)
             while True:
-                  print("herheheheheh")
                   message = c.recv(1024)
-       #          message = message.decode('utf-8')
+                  message = message.decode('utf-8')
                   if message:
-                       print(message)
-                       print("hello")
                        original_stdout = sys.stdout
-                       if check_allowed_people(message) and message != 'begin':
+                       if not check_allowed_people(message) and message != 'begin':
+                           print('bad person found')
                            with open('/storage/warning', 'a') as f:
             	               sys.stdout = f  # Change the standard output to the file we created.
-            	               print('WARNING: ', message, 'has passed by a camera at ', myip)
+            	               print('WARNING:', message, 'has passed by a camera at', myip, 'at', current_time)
             	               sys.stdout = original_stdout  # Reset the standard output to its original value
                   else:
-                        print("no more data")
                         break
         finally:
              c.close()
