@@ -81,7 +81,3 @@ echo "Kubernetes Configuration Complete.";
 fi
 
 echo "Please reboot your system and run the localnodesetup2.sh script"
-
-#echo "You now have 30 secs"
-#a=$(nc -l 3333 -w 30)
-#echo $a
