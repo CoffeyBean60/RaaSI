@@ -16,6 +16,8 @@ sed -i 's/\/swapfile/#\/swapfile/g' /etc/fstab
 
 echo "Modifying /etc/hosts to add master machine"
 echo "Please run nodeSetup1.sh on the master server"
+echo "Your IP address is " $(hostname -i)
+echo "Your hostname is " $(hostname)
 masterresponse=$(nc -w 10 -l 3333)
 
 arrIN=(${masterresponse//;/ })
@@ -24,7 +26,7 @@ masterIP=${arrIN[0]}
 echo "Found master IP at: "$masterIP
 
 masterHostname=${arrIN[1]}
-echo "Fount master Hostname at: "$masterHostname
+echo "Found master Hostname at: "$masterHostname
 
 echo "Is this IP and hostname expected?(Y/N)"
 read response
@@ -47,7 +49,9 @@ if [[ "Yy" =~ "$response" ]]; then
 echo "Kubernetes Installation Complete.";
 else
 echo "Beginning Kubernetes Installation"
-apt-get install -y openssh-server docker.io api-transport-https curl
+apt-get install -y openssh-server
+apt-get install -y docker.io
+apt-get install apt-transport-https curl
 
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 cat <<EOF > /etc/apt/sources.list.d/kubernetes.list
@@ -73,7 +77,8 @@ word2='Environment=\"KUBELET_CGROUP_ARGS=--cgroup-driver=cgroupfs\"'
 echo $word2
 sed -i "s/$word1/$word1\\n$word2/g" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 
-word3="ExecStart=\/usr\/bin\/kubelet $KUBELET_CGROUP_ARGS "
+word3="ExecStart=\/usr\/bin\/kubelet"
+word4="ExecStart=\/usr\/bin\/kubelet $KUBELET_CGROUP_ARGS"
 sed -i "s/$word3/$word4/g" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 
 echo "Kubernetes Configuration Complete.";
