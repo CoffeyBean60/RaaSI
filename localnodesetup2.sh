@@ -8,6 +8,6 @@ join=$(nc -w 10 -l 3333)
 
 echo $join
 
-#$join
+$join
 
 echo "Congragulations, you have finished setting up this node."
