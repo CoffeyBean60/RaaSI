@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Have you already completed the Initial System Configuration?"
+echo "Have you already completed the Initial System Configuration? (Y/N)"
 read response
 if [[ "Yy" =~ "$response" ]]; then
 	echo "Initial System Configuraton Completed.";
@@ -26,7 +26,7 @@ echo "Found master IP at: "$masterIP
 masterHostname=${arrIN[1]}
 echo "Fount master Hostname at: "$masterHostname
 
-echo "Is this IP and hostname expected?"
+echo "Is this IP and hostname expected?(Y/N)"
 read response
 
 if [[ "Yy" =~ "$response" ]]; then echo "yes";
@@ -41,7 +41,7 @@ sed -i "s/$myhostname/$myhostname\\n$masterIP\\t$masterHostname/g" /etc/hosts
 echo "Initial System Configuration Complete.";
 fi
 
-echo "Have you already completed Kubernetes Installation"
+echo "Have you already completed Kubernetes Installation(Y/N)"
 read response
 if [[ "Yy" =~ "$response" ]]; then
 echo "Kubernetes Installation Complete.";
@@ -61,7 +61,7 @@ apt-get install -y kubelet kubeadm kubectl
 echo "Kubernetes Installation Complete.";
 fi
 
-echo "Have you already completed Kubernetes Configuration?"
+echo "Have you already completed Kubernetes Configuration?(Y/N)"
 read response
 if [[ "Yy" =~ "$response" ]]; then
 echo "Kubernetes Configuration Complete.";
