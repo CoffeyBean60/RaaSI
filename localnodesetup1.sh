@@ -78,7 +78,7 @@ echo $word2
 sed -i "s/$word1/$word1\\n$word2/g" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 
 word3="ExecStart=\/usr\/bin\/kubelet"
-word4="ExecStart=\/usr\/bin\/kubelet $KUBELET_CGROUP_ARGS"
+word4="ExecStart=\/usr\/bin\/kubelet \$KUBELET_CGROUP_ARGS"
 sed -i "s/$word3/$word4/g" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 
 echo "Kubernetes Configuration Complete.";
