@@ -92,7 +92,7 @@ echo "Creating default user account for the dashboard..."
 kubectl create serviceaccount dashboard -n default
 kubectl create clusterrolebinding dashboard-admin -n default --clusterrole=cluster-admin --serviceaccount=default:dashboard
 
-echo "The dashboard might take a few minutes to initiate"
+echo "The dashboard might take about 8 minutes to initiate"
 echo "To check on its status run the command: sudo kubectl get -o wide pods --all-namespaces"
 echo "The master server has been set up. Please visit http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/ to view the dashboard"
 echo "To get the login token please run getDashboardToken.sh"
