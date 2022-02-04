@@ -23,7 +23,7 @@ RaaSI requires the use of static IP address for all nodes in its cluster, since 
 
 ### Installation of the Master Node
 The Master Node is used to manage the distribution of containers on all of the other nodes in the RaaSI cluster. It also performs metrics, checks the health of the cluster, and displays all results in a web dashboard hosted on its server.
-To set up the Master Node simple run the following bash script on your master node and follow the directions prompted of you.
+To set up the Master Node simple run the following bash script on your master node and follow the directions prompted of you. NOTE: The dashboard might take up to 10 mins to initialize.
 
 ```sh
 sudo ./MasterNodeSetup/masterSetup.sh
