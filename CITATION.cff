@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Coffey"
+  given-names: "Michael"
+title: "Resiliency as a Service Infrastructure (RaaSI)"
+version: 2.0
+date-released: 2022-3-31
+url: "https://github.com/CoffeyBean60/RaaSI"
