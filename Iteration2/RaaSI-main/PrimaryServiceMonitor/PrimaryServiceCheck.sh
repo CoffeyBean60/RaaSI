@@ -5,7 +5,6 @@ echo "Script for checking the health of the primary service"
 server_ip=$1
 server_user=$2
 serviceName=$3
-running="0"
 
 
 while :
@@ -37,5 +36,3 @@ do
         fi
         sleep 20
 done
-
-./PrimaryServiceCheck.sh $server_ip $server_user $serviceName

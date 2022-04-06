@@ -2,7 +2,7 @@
 
 echo "Have you already completed the Initial System Configuration? (Y/N)"
 read response
-if [[ "Yy" =~ "$response" ]]; then
+if [[ "Yy" =~ $response ]]; then
 	echo "Initial System Configuraton Completed.";
 else
 echo "Beginning Initial System Configuration"
@@ -19,7 +19,7 @@ fi
 
 echo "Have you already completed Kubernetes Installation(Y/N)"
 read response
-if [[ "Yy" =~ "$response" ]]; then
+if [[ "Yy" =~ $response ]]; then
 echo "Kubernetes Installation Complete.";
 else
 echo "Beginning Kubernetes Installation"
@@ -41,7 +41,7 @@ fi
 
 echo "Have you already completed Kubernetes Configuration?(Y/N)"
 read response
-if [[ "Yy" =~ "$response" ]]; then
+if [[ "Yy" =~ $response ]]; then
 echo "Kubernetes Configuration Complete.";
 else
 echo "Beginning Kubernetes Configuration"
@@ -59,40 +59,39 @@ fi
 
 echo "Completed Kubernetes Initial Setup"
 
-masterip=$(hostname -i)
+echo "Enter the interface that your primary IP is on: "
+read interface
+
+masterip=$(ip a s $interface | egrep -o 'inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | cut -d' ' -f2)
 
 echo "Is you ip address " $masterip " ? (Y/N)"
 read response
 
-if [[ "Yy" =~ "$response" ]]; then echo "Continuing script...";
+if [[ "Yy" =~ $response ]]; then echo "Continuing script...";
 else
 	echo "Error: Unexpected IP; Make sure your IP is set correctly and restart the script"
 	exit 1;
 fi
 
+echo "Enter the IP address of the Load Balancer: "
+read LB_ip
+
+echo "Enter the port that the Load Balancer uses for the api-server: "
+read LB_port
+
+echo "$LB_ip:$LB_port"
+
 echo "Setting up master api-server..."
-kubeadm init --pod-network-cidr=192.168.0.0/16 --apiserver-advertise-address=$masterip
+kubeadm init --control-plane-endpoint $LB_ip:$LB_port --upload-certs --pod-network-cidr=192.168.0.0/16 --apiserver-advertise-address=$masterip
 
 echo "Setting up kubernetes configuration home..."
 mkdir -p $HOME/.kube
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config
 
-while [kubectl get -o wide pods --all-namespaces | grep Pending] || [kubectl get -o wide pods --all-namespaces | grep Init] || [kubectl get -o wide pods --all-namespaces | grep Creating];
-do
-	echo "Waiting on init pods to spin up..."
-	sleep 10
-done
-
 echo "Creating tigera calico overlay network..."
 kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml
 kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml
-
-while [kubectl get -o wide pods --all-namespaces | grep Pending] || [kubectl get -o wide pods --all-namespaces | grep Init] || [kubectl get -o wide pods --all-namespaces | grep Creating];
-do
-	echo "Waiting on overlay pods to spin up..."
-	sleep 10
-done
 
 echo "Creating dashboard..."
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.4.0/aio/deploy/recommended.yaml
@@ -104,11 +103,6 @@ echo "Creating default user account for the dashboard..."
 kubectl create serviceaccount dashboard -n default
 kubectl create clusterrolebinding dashboard-admin -n default --clusterrole=cluster-admin --serviceaccount=default:dashboard
 
-while [kubectl get -o wide pods --all-namespaces | grep Pending] || [kubectl get -o wide pods --all-namespaces | grep Init] || [kubectl get -o wide pods --all-namespaces | grep Creating];
-do
-	echo "Waiting on dashboard to spin up..."
-	sleep 10
-done
 
 echo "The dashboard might take about 8 minutes to initiate"
 echo "To check on its status run the command: sudo kubectl get -o wide pods --all-namespaces"

@@ -24,8 +24,9 @@ else
         ssh-copy-id $server_user@$server_ip
         echo "SSH key gen complete.";
 fi
-
-./PrimaryServiceCheck.sh $server_ip $server_user $serviceName
-
+while :
+do
+	./PrimaryServiceCheck.sh $server_ip $server_user $serviceName &
+done
 
 

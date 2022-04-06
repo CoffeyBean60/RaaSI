@@ -11,15 +11,18 @@ echo "6. Return to RaaSI Welcome Page"
 read result
 
 if [[ "1" == "$result" ]]; then
-	echo "Executing Install Load Balancers";
+	echo "Executing Install Load Balancers"
+	../LoadBalancerSetup/LBInstallation.sh;
 elif [[ "2" == "$result" ]]; then
 	echo "Executing Install Primary Master Controller"
 	../MasterNodeSetup/masterSetup.sh;
 elif [[ "3" == "$result" ]]; then
-	echo "Executing Install Backup Master Controllers";
+	echo "Executing Install Backup Master Controllers"
+	../MasterNodeSetup/secondaryMasterInit.sh;
 elif [[ "4" == "$result" ]]; then
 	echo "Executing Install GlusterFS Persistence Volume"
-	../GlusterSetup/GlusterInstallationMaster.sh;
+	../GlusterSetup/GlusterInstallationMaster.sh
+	../GlusterSetup/GlusterClientRaaSI.sh;
 elif [[ "5" == "$result" ]]; then
 	echo "Executing Install Worker Nodes"
 	../ClientNodeSetup/serverSideNodeSetup.sh;

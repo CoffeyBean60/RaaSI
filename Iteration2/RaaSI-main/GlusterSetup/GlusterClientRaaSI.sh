@@ -4,7 +4,7 @@ echo "Beginning script for connect GlusterFS to the RaaSI cluster..."
 
 echo "Have you already completed GlusterFS Installation(Y/N)"
 read response
-if [[ "Yy" =~ "$response" ]]; then
+if [[ "Yy" =~ $response ]]; then
 echo "GlusterFS Installation Complete.";
 else
 echo "Beginning GlusterFS Installation..."
@@ -79,7 +79,7 @@ fi
 
 echo "Have you already completed GlusterFS Integration(Y/N)"
 read response
-if [[ "Yy" =~ "$response" ]]; then
+if [[ "Yy" =~ $response ]]; then
 echo "GlusterFS Integration Complete.";
 else
 echo "Beginning GlusterFS Integration..."
