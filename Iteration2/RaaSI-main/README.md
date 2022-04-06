@@ -14,7 +14,8 @@ RaaSI is a software dedicated to  security resiliency. It helps to ensure that y
 - Easy to manage dashboard to show the metrics and health of your RaaSI cluster
 - Availability through the use of deployment scripts
 - Secure communication between nodes through the use of a Tigre Calico overlay network
-- Distributed data collection through ... DB/FS
+- Secondary Service statefulness preserved through GlusterFS
+- High-Availability provided through the use of Load Balancers
 
 
 ## Installation
