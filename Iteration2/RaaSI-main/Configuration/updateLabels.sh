@@ -12,12 +12,12 @@ read -r response
 
 if [[ "Yy" =~ $response ]]; then
 	echo "Getting all node IP addresses..."
-	node_ip=($(kubectl get nodes -o wide | awk -v x=6 '{if(NR!=1 && $3!="control-plane,master") print $x}'))
-	node_name=($(kubectl get nodes -o wide | awk -v x=1 '{if(NR!=1 && $3!="control-plane,master") print $x}'));
+	mapfile -t node_ip < <(kubectl get nodes -o wide | awk -v x=6 '{if(NR!=1 && $3!="control-plane,master") print $x}')
+	mapfile -t node_name < <(kubectl get nodes -o wide | awk -v x=1 '{if(NR!=1 && $3!="control-plane,master") print $x}');
 else
 	echo "Enter the IP address of the node that you want to update: "
 	read -r node_ip
-	node_name=($(kubectl get nodes -o wide | awk -v src="${node_ip[0]}" '{if($6==src) print $1}'))
+	mapfile -t node_name < <(kubectl get nodes -o wide | awk -v src="${node_ip[0]}" '{if($6==src) print $1}')
 	echo "The node name associated with ${node_ip[0]} is ${node_name[0]}";
 fi
 
