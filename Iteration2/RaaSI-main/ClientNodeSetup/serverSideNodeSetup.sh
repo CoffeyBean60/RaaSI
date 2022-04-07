@@ -5,14 +5,14 @@ master_hostname=$(hostname)
 join_command=$(kubeadm token create --print-join-command)
 
 echo "Enter ip address to connect: "
-read client_ip
+read -r client_ip
 
 echo "Enter username to connect to: "
-read client_user
+read -r client_user
 
-client_hostname=$(ssh $client_user@$client_ip 'hostname')
+client_hostname=$(ssh "$client_user"@"$client_ip" 'hostname')
 
-echo $client_hostname
+echo "$client_hostname"
 
 echo "Adding client to the /etc/hosts file on the master server..."
 
@@ -20,41 +20,39 @@ sed -i "s/$master_hostname/$master_hostname\\n$client_ip\\t$client_hostname/g" /
 
 echo "Adding the master to the /etc/hosts file on the client server..."
 
-#client_host_command=$(sed -i "s/$client_hostname/$client_hostname\\n$master_ip\\t$master_hostname/g" /etc/hosts)
-
 client_host_command="s/$client_hostname/$client_hostname\\\n$master_ip\\\t$master_hostname/g"
-echo $client_host_command
+echo "$client_host_command"
 
-ssh -t $client_user@$client_ip "sudo sed -i $client_host_command /etc/hosts"
+ssh -t "$client_user"@"$client_ip" "sudo sed -i $client_host_command /etc/hosts"
 
 echo "Creating RaaSI directory on client machine..."
 
-ssh $client_user@$client_ip "mkdir /home/$client_user/RaaSI"
+ssh "$client_user"@"$client_ip" "mkdir RaaSI"
 
 echo "Transfering clientSideNodeSetup.sh script to client machine..."
 
-scp clientSideNodeSetup.sh $client_user@$client_ip:/home/$client_user/RaaSI/clientSideNodeSetup.sh
+scp clientSideNodeSetup.sh "$client_user"@"$client_ip":RaaSI/clientSideNodeSetup.sh
 
 echo "Making clientSideNodeSetup.sh executable..."
 
-ssh -t $client_user@$client_ip "sudo chmod +x /home/$client_user/RaaSI/clientSideNodeSetup.sh"
+ssh -t "$client_user"@"$client_ip" "sudo chmod +x RaaSI/clientSideNodeSetup.sh"
 
 echo "Executin clientSideNodeSetup.sh on $client_hostname..."
 
-ssh -t $client_user@$client_ip "sudo /home/$client_user/RaaSI/clientSideNodeSetup.sh"
+ssh -t "$client_user"@"$client_ip" "sudo RaaSI/clientSideNodeSetup.sh"
 
 echo "$client_hostname joining the RaaSI cluster..."
 
-ssh -t $client_user@$client_ip "sudo $join_command"
+ssh -t "$client_user"@"$client_ip" "sudo $join_command"
 
 echo "Would you like to search for devices on this node (y/n)?"
-read response
+read -r response
 
 if [[ "Yy" =~ $response ]]; then
 	echo "Enter the device that you would like to search for: "
-	read device
-	device_spaceless=$(echo "$device" | sed 's/ //g')
-	device_present=$(ssh -t $client_user@$client_ip "sudo lspci" | grep "$device")
+	read -r device
+	device_spaceless=${device// /}
+	device_present=$(ssh -t "$client_user"@"$client_ip" "sudo lspci" | grep "$device")
         if [ -z "$device_present" ]; then
         	echo "$device is not present";
         else
