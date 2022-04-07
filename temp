@@ -1,3 +1,0 @@
-kubeadm join 192.168.7.151:6443 --token 5oyceh.a6a3xvudaak68pf8 \
-	--discovery-token-ca-cert-hash sha256:e14a278bbcd3ea57d5a3fff11e70be1c9a2a75467cea2e96acee37d418c886e5 \
-	--control-plane --certificate-key 110cc97ac9efaa89f9a757974e2edb0cc7fe50aaf4197c5f703aa5cd575c6c4f
