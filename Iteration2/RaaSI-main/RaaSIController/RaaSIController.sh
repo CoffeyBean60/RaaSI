@@ -11,13 +11,16 @@ read result
 if [[ "1" == $result ]]; then
 	clear
 	echo "Navigating to Install RaaSI Components"
-	./RaaSIInstallation.sh;
+	./RaaSIInstallation.sh
 	exit 0;
 elif [[ "2" == $result ]]; then
 	echo "Navigating to Monitor Primary Service";
 	../PrimaryServiceMonitor/PrimaryServiceJudge.sh
+	exit 0;
 elif [[ "3" == $result ]]; then
-	echo "Navigating to Configure RaaSI Cluster";
+	echo "Navigating to Configure RaaSI Cluster"
+	./RaaSIConfiguration.sh
+	exit 0;
 elif [[ "4" == $result ]]; then
 	echo "Exiting RaaSI";
 else
