@@ -3,7 +3,7 @@
 echo "Beginning script for connect GlusterFS to the RaaSI cluster..."
 
 echo "Have you already completed GlusterFS Installation(Y/N)"
-read response
+read -r response
 if [[ "Yy" =~ $response ]]; then
 echo "GlusterFS Installation Complete.";
 else
@@ -20,13 +20,13 @@ apt-get update
 apt-get install glusterfs-client
 
 echo "Enter the ip address for the first storage node: "
-read storage1_ip
+read -r storage1_ip
 
 echo "Enter the ip address for the second storage node: "
-read storage2_ip
+read -r storage2_ip
 
 echo "Enter the ip address for the third storage node: "
-read storage3_ip
+read -r storage3_ip
 
 #create glusterfs-endpoint.yaml file
 # apiVersion: v1
@@ -78,7 +78,7 @@ echo "GlusterFS Installation Complete.";
 fi
 
 echo "Have you already completed GlusterFS Integration(Y/N)"
-read response
+read -r response
 if [[ "Yy" =~ $response ]]; then
 echo "GlusterFS Integration Complete.";
 else
