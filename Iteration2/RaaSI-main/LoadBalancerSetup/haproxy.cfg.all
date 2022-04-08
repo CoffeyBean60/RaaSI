@@ -46,7 +46,7 @@ backend apiserver
     mode tcp
     option ssl-hello-chk
     balance     roundrobin
-        server Master1 ${HOST1_ADDRESS}:6443 check fall 3 rise 2
-	server Master2 ${HOST2_ADDRESS}:6443 check fall 3 rise 2
-	server Master3 ${HOST3_ADDRESS}:6443 check fall 3 rise 2
+        server Master1 HOST1_ADDRESS:6443 check fall 3 rise 2
+	server Master2 HOST2_ADDRESS:6443 check fall 3 rise 2
+	server Master3 HOST3_ADDRESS:6443 check fall 3 rise 2
         # [...]

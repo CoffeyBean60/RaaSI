@@ -13,7 +13,7 @@ vrrp_script check_apiserver {
 
 vrrp_instance VI_1 {
     state BACKUP
-    interface ${INTERFACE}
+    interface INTERFACE
     virtual_router_id 52
     priority 100
     authentication {
@@ -21,7 +21,7 @@ vrrp_instance VI_1 {
         auth_pass 40
     }
     virtual_ipaddress {
-        ${APISERVER_VIP}
+        APISERVER_VIP
     }
     track_script {
         check_apiserver
