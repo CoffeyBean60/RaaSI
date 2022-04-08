@@ -5,10 +5,34 @@ echo "Entering update labels script..."
 echo "Enter the device that you are trying to find on the node machines: "
 read -r device
 
+# validation
+val=$(../Validation/checkValidation.sh "$device" 3)
+while [ "passed" != "$val" ];
+do
+        echo "Unexpected Response: expected device name"
+        echo "Enter the device that you are trying to find on the node machines: "
+        read -r device
+        # validation
+        val=$(../Validation/checkValidation.sh "$device" 3)
+done
+
+
 device_spaceless=${device// /}
 
 echo "Would you like to go through all node IP addresses (y/n)?"
 read -r response
+
+# validation
+val=$(../Validation/checkValidation.sh "$response" 0)
+while [ "passed" != "$val" ];
+do
+        echo "Unexpected Response"
+        echo "Would you like to go through all node IP addresses (y/n)?"
+        read -r response
+        # validation 
+        val=$(../Validation/checkValidation.sh "$response" 0)
+done
+
 
 if [[ "Yy" =~ $response ]]; then
 	echo "Getting all node IP addresses..."
@@ -17,6 +41,18 @@ if [[ "Yy" =~ $response ]]; then
 else
 	echo "Enter the IP address of the node that you want to update: "
 	read -r node_ip
+
+	# validation
+	val=$(../Validation/checkValidation.sh "$node_ip" 1)
+	while [ "passed" != "$val" ];
+	do
+        	echo "Unexpected Response: expected IP address"
+        	echo "Enter the IP address of the node that you want to update: "
+        	read -r node_ip
+        	# validation
+        	val=$(../Validation/checkValidation.sh "$node_ip" 1)
+	done
+
 	mapfile -t node_name < <(kubectl get nodes -o wide | awk -v src="${node_ip[0]}" '{if($6==src) print $1}')
 	echo "The node name associated with ${node_ip[0]} is ${node_name[0]}";
 fi
@@ -27,6 +63,18 @@ for i in "${node_ip[@]}"
 do
 	echo "Would you like to search $i for the device, $device (y/n)?"
 	read -r response
+
+	# validation
+	val=$(../Validation/checkValidation.sh "$response" 0)
+	while [ "passed" != "$val" ];
+	do
+        	echo "Unexpected Response"
+        	echo "Would you like to search $i for the device, $device (y/n)?"
+        	read -r response
+        	# validation
+        	val=$(../Validation/checkValidation.sh "$response" 0)
+	done
+
 	if [[ "Yy" =~ $response ]]; then
 		echo "Enter a ssh user for $i : "
 		read -r user
