@@ -8,7 +8,7 @@ echo "3. Install Backup Master Controllers"
 echo "4. Install GlusterFS Persistence Volume"
 echo "5. Install Worker Nodes"
 echo "6. Return to RaaSI Welcome Page"
-read result
+read -r result
 
 if [[ "1" == "$result" ]]; then
 	echo "Executing Install Load Balancers"

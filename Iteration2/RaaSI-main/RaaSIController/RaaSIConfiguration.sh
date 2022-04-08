@@ -7,7 +7,7 @@ echo "2. Update Labels on Node(s)"
 echo "3. Manually Execute Secondary Service"
 echo "4. Manually Halt Secondary Service"
 echo "5. Return to RaaSI Welcome Page"
-read result
+read -r result
 
 if [[ "1" == "$result" ]]; then
         echo "Executing Add Secondary Service";
@@ -18,14 +18,14 @@ elif [[ "2" == "$result" ]]; then
 elif [[ "3" == "$result" ]]; then
         echo "Executing Manually Execute Secondar Service"
 	echo "Enter the name of the Secondary Service that you wish to deploy: "
-	read ss
+	read -r ss
 	deployment="$ss-deployment"
 	../Configuration/manuallyDeploy.sh "$deployment"
 	exit 0;
 elif [[ "4" == "$result" ]]; then
         echo "Executing Manually Halt Secondary Service"
         echo "Enter the name of the Secondary Service that you wish to halt: "
-        read ss
+        read -r ss
         deployment="$ss-deployment"
         ../Configuration/manuallyHalt.sh "$deployment"
         exit 0;
