@@ -9,11 +9,9 @@ serviceName=$3
 
 while :
 do
-	echo "Checking health of "$serviceName
-	serviceStatus=$(ssh $server_user@$server_ip "systemctl status $serviceName | grep -q 'running' && echo $?")
-	#serviceStatus=$(systemctl status $serviceName | grep -q 'running' && echo $?)
-	echo $serviceStatus
-	if [ -z $serviceStatus ]; then
+	echo "Checking health of $serviceName"
+	serviceStatus=$(ssh "$server_user"@"$server_ip" "systemctl status $serviceName | grep -q 'running' && echo $?")
+	if [ -z "$serviceStatus" ]; then
 		echo "$serviceName has died"
 		break;
 	else
@@ -24,11 +22,9 @@ done
 
 while :
 do
-        echo "Checking health of "$serviceName
-        serviceStatus=$(ssh $server_user@$server_ip "systemctl status $serviceName | grep -q 'dead' echo $?")
-        #serviceStatus=$(systemctl status $serviceName | grep -q 'running' && echo $?)
-        echo $serviceStatus
-        if [ -z $serviceStatus ]; then
+        echo "Checking health of $serviceName"
+        serviceStatus=$(ssh "$server_user"@"$server_ip" "systemctl status $serviceName | grep -q 'dead' && echo $?")
+        if [ -z "$serviceStatus" ]; then
                 echo "$serviceName is running"
                 break;
         else
