@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Have you already completed the Initial System Configuration? (Y/N)"
-read response
+read -r response
 if [[ "Yy" =~ $response ]]; then
 	echo "Initial System Configuraton Completed.";
 else
@@ -18,7 +18,7 @@ echo "Initial System Configuration Complete.";
 fi
 
 echo "Have you already completed Kubernetes Installation(Y/N)"
-read response
+read -r response
 if [[ "Yy" =~ $response ]]; then
 echo "Kubernetes Installation Complete.";
 else
@@ -40,15 +40,13 @@ echo "Kubernetes Installation Complete.";
 fi
 
 echo "Have you already completed Kubernetes Configuration?(Y/N)"
-read response
+read -r response
 if [[ "Yy" =~ $response ]]; then
 echo "Kubernetes Configuration Complete.";
 else
 echo "Beginning Kubernetes Configuration"
 word1="EnvironmentFile=-\/etc\/default\/kubelet"
-echo $word1
 word2='Environment=\"KUBELET_CGROUP_ARGS=--cgroup-driver=cgroupfs\"'
-echo $word2
 sed -i "s/$word1/$word1\\n$word2/g" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 
 word3="ExecStart=\/usr\/bin\/kubelet"
@@ -60,12 +58,12 @@ fi
 echo "Completed Kubernetes Initial Setup"
 
 echo "Enter the interface that your primary IP is on: "
-read interface
+read -r interface
 
-masterip=$(ip a s $interface | egrep -o 'inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | cut -d' ' -f2)
+masterip=$(ip a s "$interface" | grep -E -o 'inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | cut -d' ' -f2)
 
-echo "Is you ip address " $masterip " ? (Y/N)"
-read response
+echo "Is you ip address " "$masterip" " ? (Y/N)"
+read -r response
 
 if [[ "Yy" =~ $response ]]; then echo "Continuing script...";
 else
@@ -74,20 +72,20 @@ else
 fi
 
 echo "Enter the IP address of the Load Balancer: "
-read LB_ip
+read -r LB_ip
 
 echo "Enter the port that the Load Balancer uses for the api-server: "
-read LB_port
+read -r LB_port
 
 echo "$LB_ip:$LB_port"
 
 echo "Setting up master api-server..."
-kubeadm init --control-plane-endpoint $LB_ip:$LB_port --upload-certs --pod-network-cidr=192.168.0.0/16 --apiserver-advertise-address=$masterip
+kubeadm init --control-plane-endpoint "$LB_ip":"$LB_port" --upload-certs --pod-network-cidr=192.168.0.0/16 --apiserver-advertise-address="$masterip"
 
 echo "Setting up kubernetes configuration home..."
-mkdir -p $HOME/.kube
-cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-chown $(id -u):$(id -g) $HOME/.kube/config
+mkdir -p "$HOME"/.kube
+cp -i /etc/kubernetes/admin.conf "$HOME"/.kube/config
+chown "$(id -u)":"$(id -g)" "$HOME"/.kube/config
 
 echo "Creating tigera calico overlay network..."
 kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml
@@ -97,7 +95,7 @@ echo "Creating dashboard..."
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.4.0/aio/deploy/recommended.yaml
 
 echo "Running proxy for the dashboard in the background..."
-kubectl proxy & > /var/log/kubernetes.proxy.log
+kubectl proxy &
 
 echo "Creating default user account for the dashboard..."
 kubectl create serviceaccount dashboard -n default

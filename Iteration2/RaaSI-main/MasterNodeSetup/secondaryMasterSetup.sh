@@ -2,10 +2,8 @@
 
 join_command="$*"
 
-echo $join_command
-
 echo "Have you already completed the Initial System Configuration? (Y/N)"
-read response
+read -r response
 if [[ "Yy" =~ $response ]]; then
 	echo "Initial System Configuraton Completed.";
 else
@@ -22,7 +20,7 @@ echo "Initial System Configuration Complete.";
 fi
 
 echo "Have you already completed Kubernetes Installation(Y/N)"
-read response
+read -r response
 if [[ "Yy" =~ $response ]]; then
 echo "Kubernetes Installation Complete.";
 else
@@ -44,15 +42,13 @@ echo "Kubernetes Installation Complete.";
 fi
 
 echo "Have you already completed Kubernetes Configuration?(Y/N)"
-read response
-if [[ "Yy" =~ "$response" ]]; then
+read -r response
+if [[ "Yy" =~ $response ]]; then
 echo "Kubernetes Configuration Complete.";
 else
 echo "Beginning Kubernetes Configuration"
 word1="EnvironmentFile=-\/etc\/default\/kubelet"
-echo $word1
 word2='Environment=\"KUBELET_CGROUP_ARGS=--cgroup-driver=cgroupfs\"'
-echo $word2
 sed -i "s/$word1/$word1\\n$word2/g" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 
 word3="ExecStart=\/usr\/bin\/kubelet"
@@ -64,10 +60,10 @@ fi
 echo "Completed Kubernetes Initial Setup"
 
 echo "Setting up master api-server..."
-$join_command
+"$join_command"
 
 echo "Setting up kubernetes configuration home..."
-mkdir -p $HOME/.kube
-cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-chown $(id -u):$(id -g) $HOME/.kube/config
+mkdir -p "$HOME"/.kube
+cp -i /etc/kubernetes/admin.conf "$HOME"/.kube/config
+chown "$(id -u)":"$(id -g)" "$HOME"/.kube/config
 
