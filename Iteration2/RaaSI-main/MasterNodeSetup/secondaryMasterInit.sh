@@ -2,11 +2,33 @@
 
 echo "Beginning Secondary Master Node Installation..."
 
-echo "Enter the IP of the Master Node that you want to setup :"
+echo "Enter the IP of the Master Node that you want to setup: "
 read -r master_ip
 
-echo "Enter a user with ssh privileges on the Master Node :"
+# validation
+val=$(../Validation/checkValidation.sh "$master_ip" 1)
+while [ "passed" != "$val" ];
+do
+        echo "Unexpected Response: expected IP address"
+        echo "Enter the IP of the Master Node that you want to setup: "
+        read -r master_ip
+        # validation
+        val=$(../Validation/checkValidation.sh "$master_ip" 1)
+done
+
+echo "Enter a user with ssh privileges on the Master Node: "
 read -r master_user
+
+# validation
+val=$(../Validation/checkValidation.sh "$master_user" 2)
+while [ "passed" != "$val" ];
+do
+        echo "Unexpected Response: expected username"
+        echo "Enter a user with ssh privileges on the Master Node: "
+        read -r master_user
+        # validation
+        val=$(../Validation/checkValidation.sh "$master_user" 2)
+done
 
 echo "Generating join key..."
 join_command=$(kubeadm token create --print-join-command)

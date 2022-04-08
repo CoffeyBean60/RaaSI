@@ -2,6 +2,18 @@
 
 echo "Have you already completed the Initial System Configuration? (Y/N)"
 read -r response
+
+# validation
+val=$(../Validation/checkValidation.sh "$response" 0)
+while [ "passed" != "$val" ];
+do
+        echo "Unexpected Response"
+        echo "Have you already completed the Initial System Configuration? (Y/N)"
+        read -r response
+        # validation
+        val=$(../Validation/checkValidation.sh "$response" 0)
+done
+
 if [[ "Yy" =~ $response ]]; then
 	echo "Initial System Configuraton Completed.";
 else
@@ -17,8 +29,20 @@ sed -i 's/\/swapfile/#\/swapfile/g' /etc/fstab
 echo "Initial System Configuration Complete.";
 fi
 
-echo "Have you already completed Kubernetes Installation(Y/N)"
+echo "Have you already completed Kubernetes Installation(Y/N)?"
 read -r response
+
+# validation
+val=$(../Validation/checkValidation.sh "$response" 0)
+while [ "passed" != "$val" ];
+do
+        echo "Unexpected Response"
+        echo "Have you already completed Kubernetes Installation(Y/N)?"
+        read -r response
+        # validation
+        val=$(../Validation/checkValidation.sh "$response" 0)
+done
+
 if [[ "Yy" =~ $response ]]; then
 echo "Kubernetes Installation Complete.";
 else
@@ -41,6 +65,18 @@ fi
 
 echo "Have you already completed Kubernetes Configuration?(Y/N)"
 read -r response
+
+# validation
+val=$(../Validation/checkValidation.sh "$response" 0)
+while [ "passed" != "$val" ];
+do
+        echo "Unexpected Response"
+        echo "Have you already completed Kubernetes Configuration?(Y/N)"
+        read -r response
+        # validation
+        val=$(../Validation/checkValidation.sh "$response" 0)
+done
+
 if [[ "Yy" =~ $response ]]; then
 echo "Kubernetes Configuration Complete.";
 else
@@ -60,10 +96,32 @@ echo "Completed Kubernetes Initial Setup"
 echo "Enter the interface that your primary IP is on: "
 read -r interface
 
+# validation
+val=$(../Validation/checkValidation.sh "$interface" 3)
+while [ "passed" != "$val" ];
+do
+        echo "Unexpected Response: expected interface"
+        echo "Enter the interface that your primary IP is on: "
+        read -r interface
+        # validation
+        val=$(../Validation/checkValidation.sh "$interface" 3)
+done
+
 masterip=$(ip a s "$interface" | grep -E -o 'inet [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | cut -d' ' -f2)
 
 echo "Is you ip address " "$masterip" " ? (Y/N)"
 read -r response
+
+# validation
+val=$(../Validation/checkValidation.sh "$response" 0)
+while [ "passed" != "$val" ];
+do
+        echo "Unexpected Response"
+        echo "Is your ip address $masterip ? (Y/N)"
+        read -r response
+        # validation
+        val=$(../Validation/checkValidation.sh "$response" 0)
+done
 
 if [[ "Yy" =~ $response ]]; then echo "Continuing script...";
 else
@@ -74,8 +132,30 @@ fi
 echo "Enter the IP address of the Load Balancer: "
 read -r LB_ip
 
+# validation
+val=$(../Validation/checkValidation.sh "$LB_ip" 1)
+while [ "passed" != "$val" ];
+do
+        echo "Unexpected Response: expected IP address"
+        echo "Enter the IP address of the Load Balancer: "
+        read -r LB_ip
+        # validation
+        val=$(../Validation/checkValidation.sh "$LB_ip" 1)
+done
+
 echo "Enter the port that the Load Balancer uses for the api-server: "
 read -r LB_port
+
+# validation
+val=$(../Validation/checkValidation.sh "$LB_port" 4)
+while [ "passed" != "$val" ];
+do
+        echo "Unexpected Response: expected port number"
+        echo "Enter the port that the Load Balancer uses for the api-server: "
+        read -r LB_port
+        # validation
+        val=$(../Validation/checkValidation.sh "$LB_port" 4)
+done
 
 echo "$LB_ip:$LB_port"
 

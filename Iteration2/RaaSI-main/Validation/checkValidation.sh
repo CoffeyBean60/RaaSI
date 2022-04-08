@@ -19,6 +19,9 @@ elif [ "3" == "$type" ]; then
 	# validate if string has no special characters
 	# regex: [A-Za-z0-9 ]
 	[[ "$string" =~ ^([A-Za-z0-9 ]+)$ ]] && echo "passed" || echo "failed"
+elif [ "4" == "$type" ]; then
+	# validate if string is a port
+	[[ "$string" =~ ^([0-9]+)$ ]] && echo "passed" || echo "failed"
 else
 	echo "Not good type";
 fi

@@ -4,6 +4,19 @@ join_command="$*"
 
 echo "Have you already completed the Initial System Configuration? (Y/N)"
 read -r response
+
+# validation
+val=$(../Validation/checkValidation.sh "$response" 0)
+while [ "passed" != "$val" ];
+do
+        echo "Unexpected Response"
+        echo "Have you already comleted the Initial System Configuration? (Y/N)"
+        read -r response
+        # validation
+        val=$(../Validation/checkValidation.sh "$response" 0)
+done
+
+
 if [[ "Yy" =~ $response ]]; then
 	echo "Initial System Configuraton Completed.";
 else
@@ -21,6 +34,18 @@ fi
 
 echo "Have you already completed Kubernetes Installation(Y/N)"
 read -r response
+
+# validation
+val=$(../Validation/checkValidation.sh "$response" 0)
+while [ "passed" != "$val" ];
+do
+        echo "Unexpected Response"
+        echo "Have you already completed Kubernetes Installation(Y/N)"
+        read -r response
+        # validation
+        val=$(../Validation/checkValidation.sh "$response" 0)
+done
+
 if [[ "Yy" =~ $response ]]; then
 echo "Kubernetes Installation Complete.";
 else
@@ -43,6 +68,18 @@ fi
 
 echo "Have you already completed Kubernetes Configuration?(Y/N)"
 read -r response
+
+# validation
+val=$(../Validation/checkValidation.sh "$response" 0)
+while [ "passed" != "$val" ];
+do
+        echo "Unexpected Response"
+        echo "Have you already completed Kubernetes Configuration?(Y/N)"
+        read -r response
+        # validation
+        val=$(../Validation/checkValidation.sh "$response" 0)
+done
+
 if [[ "Yy" =~ $response ]]; then
 echo "Kubernetes Configuration Complete.";
 else
