@@ -8,7 +8,7 @@ jobs:
       uses: actions/checkout@v2
     - name: Run Shellcheck
       env:
-        EXCLUDE_FILES: '*.all'
+        EXCLUDE_FILES: "check_apiserver.sh.all"
         REPORT_ONLY: true
         SHOW_ERRORS: true
       run: bash <(curl -s https://raw.githubusercontent.com/CICDToolbox/shellcheck/master/pipeline.sh)
