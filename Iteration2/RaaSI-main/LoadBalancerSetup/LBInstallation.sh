@@ -92,7 +92,7 @@ echo "Enter the interface name used on the Load Balancers: "
 read -r interface
 
 # validation
-val=$(../Validation/checkValidation.sh "$interface" 1)
+val=$(../Validation/checkValidation.sh "$interface" 3)
 while [ "passed" != "$val" ];
 do
         echo "Unexpected Response: expected interface"

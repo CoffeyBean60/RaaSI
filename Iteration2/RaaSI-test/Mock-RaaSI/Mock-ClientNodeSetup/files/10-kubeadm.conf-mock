@@ -1,0 +1,6 @@
+10-kubeadm.conf-mock file
+
+EnvironmentFile=-/etc/default/kubelet
+Environment="KUBELET_CGROUP_ARGS=--cgroup-driver=cgroupfs"
+
+ExecStart=/usr/bin/kubelet $KUBELET_CGROUP_ARGS

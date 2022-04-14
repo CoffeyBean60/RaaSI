@@ -1,0 +1,5 @@
+10-kubeadm.conf-mock file
+
+EnvironmentFile=-/etc/default/kubelet
+
+ExecStart=/usr/bin/kubelet
