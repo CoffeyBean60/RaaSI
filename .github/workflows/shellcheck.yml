@@ -8,6 +8,6 @@ jobs:
       uses: actions/checkout@v2
     - name: Run Shellcheck
       env:
-        REPORT_ONLY: true
+        REPORT_ONLY: false
         SHOW_ERRORS: true
       run: bash <(curl -s https://raw.githubusercontent.com/CICDToolbox/shellcheck/master/pipeline.sh)
