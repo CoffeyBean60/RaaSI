@@ -181,6 +181,9 @@ echo "Creating default user account for the dashboard..."
 kubectl create serviceaccount dashboard -n default
 kubectl create clusterrolebinding dashboard-admin -n default --clusterrole=cluster-admin --serviceaccount=default:dashboard
 
+echo "Creating device manager..."
+kubectl apply -f smarter-device-manager.yaml
+
 
 echo "The dashboard might take about 8 minutes to initiate"
 echo "To check on its status run the command: sudo kubectl get -o wide pods --all-namespaces"
