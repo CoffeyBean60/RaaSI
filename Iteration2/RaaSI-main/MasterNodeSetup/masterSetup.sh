@@ -184,8 +184,6 @@ kubectl create clusterrolebinding dashboard-admin -n default --clusterrole=clust
 echo "Creating device manager..."
 kubectl apply -f smarter-device-manager.yaml
 
-export NODE_CNT=0
-
 
 echo "The dashboard might take about 8 minutes to initiate"
 echo "To check on its status run the command: sudo kubectl get -o wide pods --all-namespaces"
