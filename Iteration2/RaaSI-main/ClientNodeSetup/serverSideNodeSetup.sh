@@ -69,6 +69,9 @@ echo "$client_hostname joining the RaaSI cluster..."
 
 ssh -t "$client_user"@"$client_ip" "sudo $join_command"
 
+echo "Enabling device detection on node..."
+kubectl label nodes "$client_hostname" smarter-device-manager=enabled
+
 echo "Would you like to search for devices on this node (y/n)?"
 read -r response
 
