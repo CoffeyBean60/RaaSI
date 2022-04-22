@@ -2,7 +2,7 @@
 ## Resiliency as a Service Infrastructure
 
 
-RaaSI is a software dedicated to  security resiliency. It helps to ensure that your infrastructure stays functional even when disaster strikes. Once setup, RaaSI will monitory the health of your essintial services. Once that service goes down, RaaSI will boot up containerized services on computers in your infrastructure that previously would have gone under-utilized. All while displaying the health of your RaaSI cluster through a user friendly dashboard.
+Ever-increasing dependency on infrastructure drives the need for operational resiliency of both physical and digital infrastructure. A standard system approach to resiliency involves customized solutions that are both brittle and constrained by expense. Computation and Communication (CNC) commonly combine to provide generalized solutions. Devices with these capabilities are now widely and often densely dispersed for everyday operations (e.g., wired/wireless routers are everywhere). We propose a platform that marshalls spare CNC resources to provide services in response to events threatening system resiliency. Specifically, our platform monitors existing primary services and, if such services suffer degradation, invokes a secondary service that operates over a mesh of devices to augment the diminished primary service. As the platform offers spare CNC resources to counter degradation, we call our solution RaaSI (Resilience as a Service Infrastructure).
 
 
 ## Features
