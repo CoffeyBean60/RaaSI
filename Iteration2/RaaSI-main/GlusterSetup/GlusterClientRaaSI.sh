@@ -109,17 +109,17 @@ subsets:
   addresses:
   - ip: $storage1_ip
   ports:
-  - port: 1729
+  - port: 49152
  -
   addresses:
   - ip: $storage2_ip
   ports:
-  - port: 1729
+  - port: 49152
  -
   addresses:
   - ip: $storage3_ip
   ports:
-  - port: 1729
+  - port: 49152
 EOF
 
 echo "GlusterFS Installation Complete.";
