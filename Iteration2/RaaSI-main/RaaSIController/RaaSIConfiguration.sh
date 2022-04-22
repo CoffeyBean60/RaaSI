@@ -10,7 +10,9 @@ echo "5. Return to RaaSI Welcome Page"
 read -r result
 
 if [[ "1" == "$result" ]]; then
-        echo "Executing Add Secondary Service";
+        echo "Executing Add Secondary Service"
+	../Configuration/addSecondaryService.sh
+	exit 0;
 elif [[ "2" == "$result" ]]; then
         echo "Executing Update Labels on Node(s)"
 	../Configuration/updateLabels.sh
@@ -20,7 +22,10 @@ elif [[ "3" == "$result" ]]; then
 	echo "Enter the name of the Secondary Service that you wish to deploy: "
 	read -r ss
 	deployment="$ss-deployment"
-	../Configuration/manuallyDeploy.sh "$deployment"
+	echo "Enter the device needed on the node to run this service: "
+	read -r device
+	device_spaceless=${device// /}
+	../Configuration/manuallyDeploy.sh "$deployment" "$device_spaceless"
 	exit 0;
 elif [[ "4" == "$result" ]]; then
         echo "Executing Manually Halt Secondary Service"
