@@ -148,6 +148,8 @@ echo "Beginning GlusterFS Integration..."
 
 kubectl create -f glusterfs-endpoints.yaml
 
+kubectl create -f glusterfs-service.yaml
+
 kubectl create -f glusterfs-pv.yaml
 
 kubectl create -f glusterfs-pvc.yaml
