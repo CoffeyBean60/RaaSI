@@ -8,4 +8,4 @@ mapfile -t node_ip < <(kubectl get nodes -o wide --show-labels | grep "device=$d
 NODE_CNT="${#node_ip[@]}"
 
 echo "Deploying $deployment..."
-kubectl scale deployment/"$deployment" --replicas=$NODE_CNT
+kubectl scale deployment/"$deployment" --replicas="$NODE_CNT"
