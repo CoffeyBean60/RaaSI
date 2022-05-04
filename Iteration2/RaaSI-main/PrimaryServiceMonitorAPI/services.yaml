@@ -1,0 +1,27 @@
+# Judge v0.1 - services.yaml
+# Author: Ryan Cobb (@cobbr_io)
+# Project Home: https://github.com/cobbr/Judge
+# License: GNU GPLv3
+
+#teams:
+  # The team that should be scored based on the functionality of this service
+  #- team_name : Baylor
+
+services:
+  - service_type_name       : http
+    service_name            : Google
+    service_connection      : google.com
+    service_request         : home
+    
+deployments:
+  - deployment_name         : example-deployment
+    deployment_device       : RedHat
+    deployment_percentage   : 50
+    service_name            : Example
+    
+  - deployment_name         : example2-deployment
+    deployment_device       : RedHat
+    deployment_percentage   : 50
+    service_name            : Example
+    
+    

@@ -1,0 +1,30 @@
+{#
+   Judge v0.1 - errors.html
+   Author: Ryan Cobb (@cobbr_io)
+   Project Home: https://github.com/cobbr/Judge
+   License: GNU GPLv3
+#}
+
+{% include 'header.html' %}
+    <div class="starter-template">
+      <h1>Current Errors</h1>
+      <div class="container">
+        <table class="table table-condensed">
+          <thead>
+            <tr>
+              <th>Service Name</th>
+              <th>Error Message</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for service in execute_db_query('select * from service natural join error ORDER BY error_time') %}
+            <tr>
+              <td>{{ service['service_name'] }}</td>
+              <td>{{ service['error_message'] }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    <div>
+{% include 'footer.html' %}
