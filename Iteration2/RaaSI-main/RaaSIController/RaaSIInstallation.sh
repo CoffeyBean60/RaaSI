@@ -12,29 +12,29 @@ read -r result
 
 if [[ "1" == "$result" ]]; then
 	echo "Executing Install Load Balancers"
-	cd ../LoadBalancerSetup
+	cd ../LoadBalancerSetup || exit
 	./LBInstallation.sh
-	cd ../RaaSIController;
+	cd ../RaaSIController || exit;
 elif [[ "2" == "$result" ]]; then
 	echo "Executing Install Primary Master Controller"
-	cd ../MasterNodeSetup
+	cd ../MasterNodeSetup || exit
 	./masterSetup.sh
-	cd ../RaaSIController;
+	cd ../RaaSIController || exit;
 elif [[ "3" == "$result" ]]; then
 	echo "Executing Install Backup Master Controllers"
-	cd ../MasterNodeSetup
+	cd ../MasterNodeSetup || exit
 	./secondaryMasterInit.sh
-	cd ../RaaSIController;
+	cd ../RaaSIController || exit;
 elif [[ "4" == "$result" ]]; then
 	echo "Executing Install GlusterFS"
-	cd ../GlusterSetup
+	cd ../GlusterSetup || exit
 	.GlusterInstallationMaster.sh
-	cd ../RaaSIController;
+	cd ../RaaSIController || exit;
 elif [[ "5" == "$result" ]]; then
 	echo "Executing Install Worker Nodes"
-	cd ../ClientNodeSetup
+	cd ../ClientNodeSetup || exit
 	./serverSideNodeSetup.sh
-	cd ../RaaSIController;
+	cd ../RaaSIController || exit;
 elif [[ "6" == "$result" ]]; then
 	clear
 	echo "Returning to RaaSI Welcome Page"
