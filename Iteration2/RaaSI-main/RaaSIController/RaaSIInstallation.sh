@@ -28,7 +28,7 @@ elif [[ "3" == "$result" ]]; then
 elif [[ "4" == "$result" ]]; then
 	echo "Executing Install GlusterFS"
 	cd ../GlusterSetup || exit
-	.GlusterInstallationMaster.sh
+	./GlusterInstallationMaster.sh
 	cd ../RaaSIController || exit;
 elif [[ "5" == "$result" ]]; then
 	echo "Executing Install Worker Nodes"
