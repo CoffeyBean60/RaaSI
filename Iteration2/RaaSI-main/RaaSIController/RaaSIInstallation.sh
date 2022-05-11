@@ -5,27 +5,36 @@ echo "Please select an option below:"
 echo "1. Install Load Balancers"
 echo "2. Install Primary Master Controller"
 echo "3. Install Backup Master Controllers"
-echo "4. Install GlusterFS Persistence Volume"
+echo "4. Install GlusterFS"
 echo "5. Install Worker Nodes"
 echo "6. Return to RaaSI Welcome Page"
 read -r result
 
 if [[ "1" == "$result" ]]; then
 	echo "Executing Install Load Balancers"
-	../LoadBalancerSetup/LBInstallation.sh;
+	cd ../LoadBalancerSetup
+	./LBInstallation.sh
+	cd ../RaaSIController;
 elif [[ "2" == "$result" ]]; then
 	echo "Executing Install Primary Master Controller"
-	../MasterNodeSetup/masterSetup.sh;
+	cd ../MasterNodeSetup
+	./masterSetup.sh
+	cd ../RaaSIController;
 elif [[ "3" == "$result" ]]; then
 	echo "Executing Install Backup Master Controllers"
-	../MasterNodeSetup/secondaryMasterInit.sh;
+	cd ../MasterNodeSetup
+	./secondaryMasterInit.sh
+	cd ../RaaSIController;
 elif [[ "4" == "$result" ]]; then
-	echo "Executing Install GlusterFS Persistence Volume"
-	../GlusterSetup/GlusterInstallationMaster.sh
-	../GlusterSetup/GlusterClientRaaSI.sh;
+	echo "Executing Install GlusterFS"
+	cd ../GlusterSetup
+	.GlusterInstallationMaster.sh
+	cd ../RaaSIController;
 elif [[ "5" == "$result" ]]; then
 	echo "Executing Install Worker Nodes"
-	../ClientNodeSetup/serverSideNodeSetup.sh;
+	cd ../ClientNodeSetup
+	./serverSideNodeSetup.sh
+	cd ../RaaSIController;
 elif [[ "6" == "$result" ]]; then
 	clear
 	echo "Returning to RaaSI Welcome Page"
