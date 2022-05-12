@@ -11,11 +11,13 @@ read -r result
 
 if [[ "1" == "$result" ]]; then
         echo "Executing Add Secondary Service"
-	../Configuration/addSecondaryService.sh
+	cd ../Configuration || exit
+	./addSecondaryService.sh
 	exit 0;
 elif [[ "2" == "$result" ]]; then
         echo "Executing Update Labels on Node(s)"
-	../Configuration/updateLabels.sh
+	cd ../Configuration || exit
+	./updateLabels.sh
 	exit 0;
 elif [[ "3" == "$result" ]]; then
         echo "Executing Manually Execute Secondar Service"
@@ -25,14 +27,15 @@ elif [[ "3" == "$result" ]]; then
 	echo "Enter the device needed on the node to run this service: "
 	read -r device
 	device_spaceless=${device// /}
-	../Configuration/manuallyDeploy.sh "$deployment" "$device_spaceless"
+	cd ../Configuration || exit
+	./manuallyDeploy.sh "$deployment" "$device_spaceless"
 	exit 0;
 elif [[ "4" == "$result" ]]; then
         echo "Executing Manually Halt Secondary Service"
-        echo "Enter the name of the Secondary Service that you wish to halt: "
-        read -r ss
-        deployment="$ss-deployment"
-        ../Configuration/manuallyHalt.sh "$deployment"
+        echo "Enter the name of the Secondary Service Deployment that you wish to halt: "
+        read -r deployment
+	cd ../Configuration || exit
+        ./manuallyHalt.sh "$deployment"
         exit 0;
 elif [[ "5" == "$result" ]]; then
         clear
