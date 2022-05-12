@@ -15,7 +15,7 @@ if [[ "1" == "$result" ]]; then
 	exit 0;
 elif [[ "2" == "$result" ]]; then
 	echo "Navigating to Monitor Primary Service";
-	../PrimaryServiceMonitor/PrimaryServiceJudge.sh
+	./RaaSIPrimaryService.sh
 	exit 0;
 elif [[ "3" == "$result" ]]; then
 	echo "Navigating to Configure RaaSI Cluster"
