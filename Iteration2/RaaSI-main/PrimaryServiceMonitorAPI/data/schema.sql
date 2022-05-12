@@ -21,7 +21,6 @@ CREATE TABLE service (
     service_request TEXT NOT NULL,
     service_active INTEGER NOT NULL DEFAULT 1,
     service_type_name TEXT NOT NULL,
-    service_running INTEGER NOT NULL DEFAULT 1,
     FOREIGN KEY (service_type_id) REFERENCES service_type(service_type_id)
 );
 
