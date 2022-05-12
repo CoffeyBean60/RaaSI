@@ -61,9 +61,10 @@ spec:
           values:
           - $device_name
    volumes:
-    - name: glusterfs-pv
-      persistentVolumeClaim:
-       claimName: glusterfs-claim
+    - name: $storage_app_name
+      hostPath:
+       path: /gv0
+       type: Directory
    containers:
    - image: $image_name
      name: $app_name
