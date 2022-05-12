@@ -116,7 +116,7 @@ ssh -t "$storage_user"@"$storage_ip" "sudo gluster volume set gv0 auth.allow $cl
 
 echo "Adding GlusterFS volume to client machine..."
 
-ssh -t "$client_user"@"$client_ip" "sudo mount -t glusterfs $storage_ip:/gv0 /gv0"
+ssh -t "$client_user"@"$client_ip" "sudo mkdir /gv0 && sudo mount -t glusterfs $storage_ip:/gv0 /gv0"
 
 echo "$client_hostname joining the RaaSI cluster..."
 
