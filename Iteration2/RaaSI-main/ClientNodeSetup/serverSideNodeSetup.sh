@@ -1,6 +1,21 @@
 #!/bin/bash
 
-master_ip=$(hostname -i)
+echo "Beginning Client Node Setup Script..."
+
+echo "Enter the ip address of the kube-apiserver (if you are running RaaSI in high availability mode this is the VIP of the load balancer):"
+read -r master_ip
+
+# validation
+val=$(../Validation/checkValidation.sh "$storage1_ip" 1)
+while [ "passed" != "$val" ];
+do
+        echo "Unexpected Response: expected IP address"
+        echo "Enter the ip address for Storage1: "
+        read -r storage1_ip
+        # validation
+        val=$(../Validation/checkValidation.sh "$storage1_ip" 1)
+done
+
 master_hostname=$(hostname)
 join_command=$(kubeadm token create --print-join-command)
 
