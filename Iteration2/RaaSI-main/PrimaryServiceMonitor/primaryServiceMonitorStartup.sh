@@ -13,7 +13,7 @@ do
 	val=$(../Validation/checkValidation.sh "$response" 0)
 done
 
-while [[ "Yy" =~ $response]];
+while [[ "Yy" =~ $response ]];
 do
   echo "Enter the ip address for a master node to setup primary service monitoring on:"
   read -r master_ip
