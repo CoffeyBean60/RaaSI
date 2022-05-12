@@ -6,14 +6,14 @@ echo "Enter the ip address of the kube-apiserver (if you are running RaaSI in hi
 read -r master_ip
 
 # validation
-val=$(../Validation/checkValidation.sh "$storage1_ip" 1)
+val=$(../Validation/checkValidation.sh "$master_ip" 1)
 while [ "passed" != "$val" ];
 do
         echo "Unexpected Response: expected IP address"
-        echo "Enter the ip address for Storage1: "
-        read -r storage1_ip
+        echo "Enter the ip address of the kube-apiserver (if you are running RaaSI in high availability mode this is the VIP of the load balancer): "
+        read -r master_ip
         # validation
-        val=$(../Validation/checkValidation.sh "$storage1_ip" 1)
+        val=$(../Validation/checkValidation.sh "$master_ip" 1)
 done
 
 master_hostname=$(hostname)
@@ -34,7 +34,7 @@ do
 done
 
 
-echo "Enter username to connect to: "
+echo "Enter username to connect to on the client machine: "
 read -r client_user
 
 # validation
@@ -76,9 +76,47 @@ echo "Making clientSideNodeSetup.sh executable..."
 
 ssh -t "$client_user"@"$client_ip" "sudo chmod +x RaaSI/clientSideNodeSetup.sh"
 
-echo "Executin clientSideNodeSetup.sh on $client_hostname..."
+echo "Executing clientSideNodeSetup.sh on $client_hostname..."
 
 ssh -t "$client_user"@"$client_ip" "sudo RaaSI/clientSideNodeSetup.sh"
+
+echo "Mounting the GlusterFS volume on the client node..."
+
+echo "Enter one of the storage ip addresses:"
+read -r storage_ip
+
+# validation
+val=$(../Validation/checkValidation.sh "$storage_ip" 1)
+while [ "passed" != "$val" ];
+do
+        echo "Unexpected Response: expected IP address"
+        echo "Enter one of the storage ip addresses: "
+        read -r storage_ip
+        # validation
+        val=$(../Validation/checkValidation.sh "$storage_ip" 1)
+done
+
+echo "Enter username to connect to on the storage machine: "
+read -r storage_user
+
+# validation
+val=$(../Validation/checkValidation.sh "$storage_user" 2)
+while [ "passed" != "$val" ];
+do
+        echo "Unexpected Response: valid username was expected"
+        echo "Enter username to connect to on the storage machine: "
+        read -r storage_user
+        # validation
+        val=$(../Validation/checkValidation.sh "$storage_user" 2)
+done
+
+echo "Adding $client_ip to whitelist on GlusterFS..."
+
+ssh -t "$storage_user"@"$storage_ip" "sudo gluster volume set gv0 auth.allow $client_ip"
+
+echo "Adding GlusterFS volume to client machine..."
+
+ssh -t "$client_user"@"$client_ip" "sudo mount -t glusterfs $storage_ip:/gv0 /gv0"
 
 echo "$client_hostname joining the RaaSI cluster..."
 
