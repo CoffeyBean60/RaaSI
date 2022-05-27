@@ -149,5 +149,88 @@ ssh -t "$client_user3"@"$storage3_ip" "sudo apt-mark hold glusterfs* && sudo mkd
 echo "Activating GlusterFS volume..."
 ssh -t "$client_user1"@"$storage1_ip" "sudo gluster volume create gv0 replica 3 $storage1_ip:/data/glusterfs/brick1/gv0 $storage2_ip:/data/glusterfs/brick1/gv0 $storage3_ip:/data/glusterfs/brick1/gv0 force"
 
+echo "Setting up TLS on GlusterFS Servers..."
+echo "Copying over initial TLS installation to Storage1..."
+scp GlusterServerOpenSSL.sh "$client_user1"@"$storage1_ip":RaaSI/GlusterServerOpenSSL.sh
+
+echo "Executing GlusterServerOpenSSL.sh on Storage1..."
+ssh -t "$client_user1"@"$storage1_ip" "sudo chmod +x RaaSI/GlusterServerOpenSSL.sh; sudo RaaSI/GlusterServerOpenSSL.sh"
+
+echo "Copying over initial TLS installation to Storage2..."
+scp GlusterServerOpenSSL.sh "$client_user2"@"$storage2_ip":RaaSI/GlusterServerOpenSSL.sh
+
+echo "Executing GlusterServerOpenSSL.sh on Storage2..."
+ssh -t "$client_user2"@"$storage2_ip" "sudo chmod +x RaaSI/GlusterServerOpenSSL.sh; sudo RaaSI/GlusterServerOpenSSL.sh"
+
+echo "Copying over initial TLS installation to Storage3..."
+scp GlusterServerOpenSSL.sh "$client_user3"@"$storage3_ip":RaaSI/GlusterServerOpenSSL.sh
+
+echo "Executing GlusterServerOpenSSL.sh on Storage3..."
+ssh -t "$client_user3"@"$storage3_ip" "sudo chmod +x RaaSI/GlusterServerOpenSSL.sh; sudo RaaSI/GlusterServerOpenSSL.sh"
+
+mkdir ca
+cd ca || exit
+echo "Collecting all certificates from the storage servers..."
+scp "$client_user1"@"$storage1_ip":/etc/ssl/glusterfs.pem server1.pem
+scp "$client_user2"@"$storage2_ip":/etc/ssl/glusterfs.pem server2.pem
+scp "$client_user3"@"$storage3_ip":/etc/ssl/glusterfs.pem server3.pem
+
+echo "Combining certificates into a CA..."
+cat server1.pem server2.pem server3.pem > glusterfs.ca
+
+echo "Transefering the glusterfs server CA to all storage servers..."
+scp glusterfs.ca "$client_user1"@"$storage1_ip":RaaSI/glusterfs.ca
+scp glusterfs.ca "$client_user2"@"$storage2_ip":RaaSI/glusterfs.ca
+scp glusterfs.ca "$client_user3"@"$storage3_ip":RaaSI/glusterfs.ca
+
+echo "Transfering the glusterfs client CA to all storage servers..."
+scp glusterfs.ca "$client_user1"@"$storage1_ip":RaaSI/glusterfs-client.ca
+scp glusterfs.ca "$client_user2"@"$storage2_ip":RaaSI/glusterfs-client.ca
+scp glusterfs.ca "$client_user3"@"$storage3_ip":RaaSI/glusterfs-client.ca
+
+echo "Moving the glusterfs.ca and glusterfs-client.ca files to the /etc/ssl directory on all storage servers..."
+ssh -t "$client_user1"@"$storage1_ip" "sudo mv RaaSI/glusterfs.ca /etc/ssl/glusterfs.ca; sudo mv RaaSI/glusterfs-client.ca /etc/ssl/glusterfs-client.ca"
+ssh -t "$client_user2"@"$storage2_ip" "sudo mv RaaSI/glusterfs.ca /etc/ssl/glusterfs.ca; sudo mv RaaSI/glusterfs-client.ca /etc/ssl/glusterfs-client.ca"
+ssh -t "$client_user3"@"$storage3_ip" "sudo mv RaaSI/glusterfs.ca /etc/ssl/glusterfs.ca; sudo mv RaaSI/glusterfs-client.ca /etc/ssl/glusterfs-client.ca"
+
+cd ../
+rm -r ca
+
+echo "Getting the hostname for Storage1..."
+host1=$(ssh "$client_user1"@"$storage1_ip" "hostname")
+echo "$host1"
+
+echo "Getting the hostname for Storage2..."
+host2=$(ssh "$client_user2"@"$storage2_ip" "hostname")
+echo "$host2"
+
+echo "Getting the hostname for Storage3..."
+host3=$(ssh "$client_user3"@"$storage3_ip" "hostname")
+echo "$host3"
+
+command1="s/$host1/$host1"'\\n'"$storage2_ip"'\\t'"$host2"'\\n'"$storage3_ip"'\\t'"$host2/g"
+command1="sudo sed -i "'"'"$command1"'"'" /etc/hosts"
+
+command2="s/$host2/$host2"'\\n'"$storage1_ip"'\\t'"$host1"'\\n'"$storage3_ip"'\\t'"$host3/g"
+command2="sudo sed -i "'"'"$command2"'"'" /etc/hosts"
+
+command3="s/$host3/$host3"'\\n'"$storage1_ip"'\\t'"$host1"'\\n'"$storage2_ip"'\\t'"$host2/g"
+command3="sudo sed -i "'"'"$command3"'"'" /etc/hosts"
+
+echo "Adding the servers to /etc/host on Storage1..."
+ssh -t "$client_user1"@"$storage1_ip" "$command1"
+
+echo "Adding the servers to /etc/host on Storage2..."
+ssh -t "$client_user2"@"$storage2_ip" "$command2"
+
+echo "Adding the servers to /etc/host on Storage3..."
+ssh -t "$client_user3"@"$storage3_ip" "$command3"
+
+echo "Adding the servers to the ssl-allow authorization group..."
+ssh -t "$client_user1"@"$storage1_ip" "sudo gluster volume set gv0 auth.ssl-allow $host1,$host2,$host3"
+
+echo "Turning on ssl for the volume gv0..."
+ssh -t "$client_user1"@"$storage1_ip" "sudo gluster volume set gv0 client.ssl on; sudo gluster volume set gv0 server.ssl on"
+
 echo "Starting GlusterFS volume..."
 ssh -t "$client_user1"@"$storage1_ip" "sudo gluster volume start gv0"
