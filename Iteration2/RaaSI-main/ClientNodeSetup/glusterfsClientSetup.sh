@@ -181,3 +181,5 @@ ssh -t "$storage_user1"@"$storage1_ip" "sudo gluster volume stop gv0; sudo glust
 echo "Mounting the GlusterFS volume to client machine..."
 ssh -t "$client_user"@"$client_ip" "sudo mkdir /gv0 && sudo mount -t glusterfs $storage1_ip:/gv0 /gv0"
 
+rm -rf ca
+
