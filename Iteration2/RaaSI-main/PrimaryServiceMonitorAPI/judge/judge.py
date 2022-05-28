@@ -18,17 +18,15 @@ from werkzeug.datastructures import CombinedMultiDict
 
 from urllib.parse import urlparse
 
-from . import tasks
-from . import db
-#import tasks
-#import db
+import tasks
+import db
 
 # Application settings
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_object('config')
 if os.path.isfile('instance/config.py'):
     app.config.from_pyfile('config.py')
-app.config['UPLOAD_FOLDER'] = 'data/uploads'
+app.config['UPLOAD_FOLDER'] = '../data/uploads'
 
 @app.context_processor
 def utility_processor():
@@ -42,8 +40,8 @@ def setup():
     """
     Flask command line function that creates or clears the database.
     """
-    if os.path.isfile('data/judge.db'):
-        os.remove('data/judge.db')
+    if os.path.isfile('../data/judge.db'):
+        os.remove('../data/judge.db')
     print('Initializing database...')
     db.database_create()
     print('Done.')
@@ -270,4 +268,4 @@ def go():
     pollThread = Thread(target=poll_forever)
     pollThread.setDaemon(True)
     pollThread.start()
-    app.run(host='www.CybearScoreboard.com')
+    app.run(host='www.RaaSI.psm')
