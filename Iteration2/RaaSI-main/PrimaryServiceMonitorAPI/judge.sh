@@ -5,4 +5,5 @@
 # License: GNU GPLv3
 
 celery -A judge.tasks worker -n celery@localhost -c 5 --loglevel=info > /dev/null 2>&1 &
+cd judge || exit
 python3 run.py
