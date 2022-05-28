@@ -10,7 +10,7 @@ then
 fi
 sudo apt-get install python3-pip rabbitmq-server -y
 sudo pip3 install -r requirements.txt
-cd ..
-export FLASK_APP=judge/judge.py
+cd ../judge || exit
+export FLASK_APP=judge.py
 flask setup
 flask populate
