@@ -8,10 +8,10 @@ import sqlite3, yaml
 # Database functions
 def database_create():
     """
-    Create the backend ./data/judge.db sqlite database
+    Create the backend ../data/judge.db sqlite database
     """
     db = database_connect()
-    with open('./data/schema.sql', mode='r') as f:
+    with open('../data/schema.sql', mode='r') as f:
         db.cursor().executescript(f.read())
     db.commit()
 
@@ -39,7 +39,7 @@ def database_connect():
     connection object.
     """
     try:
-        conn = sqlite3.connect('./data/judge.db')
+        conn = sqlite3.connect('../data/judge.db')
         conn.row_factory = sqlite3.Row
         return conn
     except Exception as e:
