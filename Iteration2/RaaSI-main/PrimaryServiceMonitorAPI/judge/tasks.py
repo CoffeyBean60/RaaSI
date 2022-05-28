@@ -21,8 +21,7 @@ from time import sleep
 import pycurl
 from io import BytesIO
 
-from .db import execute_db_query
-#from db import execute_db_query
+from db import execute_db_query
 
 #b_obj = BytesIO()
 #crl = pycurl.Curl()
