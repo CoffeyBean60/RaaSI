@@ -3,7 +3,7 @@
 # Project Home: https://github.com/cobbr/Judge
 # License: GNU GPLv3
 
-from judge import judge
+import judge
 
 if __name__ == '__main__':
     judge.go()
