@@ -6,7 +6,8 @@ echo "1. Add Secondary Service"
 echo "2. Update Labels on Node(s)"
 echo "3. Manually Execute Secondary Service"
 echo "4. Manually Halt Secondary Service"
-echo "5. Return to RaaSI Welcome Page"
+echo "5. Create ETCD Backup Job"
+echo "6. Return to RaaSI Welcome Page"
 read -r result
 
 if [[ "1" == "$result" ]]; then
@@ -38,6 +39,10 @@ elif [[ "4" == "$result" ]]; then
         ./manuallyHalt.sh "$deployment"
         exit 0;
 elif [[ "5" == "$result" ]]; then
+	echo "Executing Create ETCD Backup Job"
+	cd ../Configuration || exit
+	./backupETCD.sh
+elif [[ "6" == "$result" ]]; then
         clear
         echo "Returning to RaaSI Welcome Page"
         ./RaaSIController.sh
