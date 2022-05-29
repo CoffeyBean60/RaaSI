@@ -9,7 +9,7 @@ do
 
 	node_count="${#node_ip[@]}"
 
-	service_count=$(grep -c service_type_name all-services.yaml)
+	service_count=$(grep -c service_type_name ../PrimaryServiceMonitorAPI/all-services.yaml)
 
 	count=1
 
@@ -18,10 +18,10 @@ do
 		echo "services:" > "$i-services.yaml"
 		if [ "$node_count" -ge "$service_count" ]; then
 			{
-				grep -m"$count" "service_type_name" all-services.yaml | tail -n1
-				grep -m"$count" "service_name" all-services.yaml | tail -n1
-				grep -m"$count" "service_connection" all-services.yaml | tail -n1
-				grep -m"$count" "service_request" all-services.yaml | tail -n1
+				grep -m"$count" "service_type_name" ../PrimaryServiceMonitorAPI/all-services.yaml | tail -n1
+				grep -m"$count" "service_name" ../PrimaryServiceMonitorAPI/all-services.yaml | tail -n1
+				grep -m"$count" "service_connection" ../PrimaryServiceMonitorAPI/all-services.yaml | tail -n1
+				grep -m"$count" "service_request" ../PrimaryServiceMonitorAPI/all-services.yaml | tail -n1
 				echo ""
 			} >> "$i-services.yaml"
 			count=$(("$count"+1))
@@ -31,21 +31,21 @@ do
 			for (( j=0; j < "$result"; j++ ))
 			do
 				{
-					grep -m"$count" "service_type_name" all-services.yaml | tail -n1
-					grep -m"$count" "service_name" all-services.yaml | tail -n1
-					grep -m"$count" "service_connection" all-services.yaml | tail -n1
-					grep -m"$count" "service_request" all-services.yaml | tail -n1
+					grep -m"$count" "service_type_name" ../PrimaryServiceMonitorAPI/all-services.yaml | tail -n1
+					grep -m"$count" "service_name" ../PrimaryServiceMonitorAPI/all-services.yaml | tail -n1
+					grep -m"$count" "service_connection" ../PrimaryServiceMonitorAPI/all-services.yaml | tail -n1
+					grep -m"$count" "service_request" ../PrimaryServiceMonitorAPI/all-services.yaml | tail -n1
 					echo ""
 				} >> "$i-services.yaml"
 				count=$(("$count"+1))
 				service_count=$(("$service_count"-1))
 			done
 		fi;
-		grep -A5000 -m1 -e "deployments:" all-services.yaml >> "$i-services.yaml"
+		grep -A5000 -m1 -e "deployments:" ../PrimaryServiceMonitorAPI/all-services.yaml >> "$i-services.yaml"
 		node_count=$(("$node_count"-1))
 		result=$(hostname -i | grep "$i")
 		if [ -n "$result" ]; then
-			cp "$i-services.yaml" "services.yaml"
+			cp "$i-services.yaml" "../PrimaryServiceMonitorAPI/services.yaml"
 		fi;
 	done
 	sleep 2m
