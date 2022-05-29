@@ -6,41 +6,41 @@ echo "Would you like to store the backup on a remote machine? (Y/N)"
 read -r response
 
 # validation
-#val=$(../Validation/checkValidation.sh "$response" 0)
-#while [ "passed" != "$val" ];
-#do
-#	echo "Unexpected Response"
-#	echo "Would you like to store the backup on a remote machine? (Y/N)"
-#	read -r response
-#	val=$(../Validation/checkValidation.sh "$response" 0)
-#done
+val=$(../Validation/checkValidation.sh "$response" 0)
+while [ "passed" != "$val" ];
+do
+	echo "Unexpected Response"
+	echo "Would you like to store the backup on a remote machine? (Y/N)"
+	read -r response
+	val=$(../Validation/checkValidation.sh "$response" 0)
+done
 
 if [[ "Yy" =~ $response ]]; then
 	echo "Enter the IP address of the remote machine: "
 	read -r remote_ip
 
 	# validation
-#	val=$(../Validation/checkValidation.sh "$remote_ip" 1)
-#	while [ "passed" != "$val" ];
-#	do
-#		echo "Unexpected Response: expected IP address"
-#		echo "Enter the IP address of the remote machine: "
-#		read -r remote_ip
-#		val=$(../Validation/checkValidation.sh "$remote_ip" 1)
-#	done
+	val=$(../Validation/checkValidation.sh "$remote_ip" 1)
+	while [ "passed" != "$val" ];
+	do
+		echo "Unexpected Response: expected IP address"
+		echo "Enter the IP address of the remote machine: "
+		read -r remote_ip
+		val=$(../Validation/checkValidation.sh "$remote_ip" 1)
+	done
 
 	echo "Enter a user to connect to on the remote machine: "
 	read -r remote_user
 
 	# validation
-#	val=$(../Validation/checkValidation.sh "$remote_user" 2)
-#	while [ "passed" != "$val" ];
-#	do
-#		echo "Unexpected Response: expected username"
-#		echo "Enter a user to connect to on the remote machine: "
-#		read -r remote_user
-#		val=$(../Validation/checkValidation.sh "$remote_user" 2)
-#	done
+	val=$(../Validation/checkValidation.sh "$remote_user" 2)
+	while [ "passed" != "$val" ];
+	do
+		echo "Unexpected Response: expected username"
+		echo "Enter a user to connect to on the remote machine: "
+		read -r remote_user
+		val=$(../Validation/checkValidation.sh "$remote_user" 2)
+	done
 
 	echo "Establishing ssh key with remote machine..."
 
