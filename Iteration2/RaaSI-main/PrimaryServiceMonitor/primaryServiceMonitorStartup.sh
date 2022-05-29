@@ -49,6 +49,9 @@ do
   echo "Copying RaaSI to the master node..."
   scp -r ../../RaaSI-main "$master_user"@"$master_ip":/RaaSI/RaaSI-main
   
+  echo "Starting Primary Service API Splitter..."
+  ssh -t "$master_user"@"$master_ip" "cd /RaaSI/RaaSI-main/PrimaryServiceMonitor && sudo chmod +x primaryServiceSplitter.sh && sudo ./primaryServiceSplitter.sh &"
+  
   echo "Installing Primary Service API..."
   ssh -t "$master_user"@"$master_ip" "cd /RaaSI/RaaSI-main/PrimaryServiceMonitorAPI/setup && sudo chmod +x install.sh && sudo ./install.sh"
    
@@ -68,6 +71,10 @@ do
 	  val=$(../Validation/checkValidation.sh "$response" 0)
   done
 done
+
+echo "Starting Primary Service API Splitter on local node..."
+chmod +x primaryServiceSplitter.sh
+./primaryServiceSplitter.sh &
 
 echo "Installing Primary Service API on local node..."
 cd ../PrimaryServiceMonitorAPI/setup || exit
