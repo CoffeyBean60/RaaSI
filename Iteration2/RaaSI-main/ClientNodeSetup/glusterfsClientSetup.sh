@@ -157,20 +157,12 @@ ssh -t "$storage_user3"@"$storage3_ip" "$command3"
 
 echo "Getting the authorization set from GlusterFS..."
 echo "Please type the password twice"
-wlist=$(ssh -t "$storage_user1"@"$storage1_ip" "sudo gluster volume get gv0 auth.allow")
-
-echo "Please type the password twice"
 slist=$(ssh -t "$storage_user1"@"$storage1_ip" "sudo gluster volume get gv0 auth.ssl-allow")
 
 
-wlist=$(echo "$wlist" | awk -v x=2 '{if(NR!=1 && NR!=2 && NR!=3) print $x}')
 slist=$(echo "$slist" | awk -v x=2 '{if(NR!=1 && NR!=2 && NR!=3) print $x}')
 
-wlist="$client_ip,$wlist"
 slist="$host,$slist"
-
-echo "Adding $client_ip to whitelist on GlusterFS..."
-ssh -t "$storage_user1"@"$storage1_ip" "sudo gluster volume set gv0 auth.allow $wlist"
 
 echo "Adding the client to the ssl-allow authorization group..."
 ssh -t "$storage_user1"@"$storage1_ip" "sudo gluster volume set gv0 auth.ssl-allow $slist"

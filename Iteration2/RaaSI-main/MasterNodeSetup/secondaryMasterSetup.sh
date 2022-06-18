@@ -97,7 +97,7 @@ fi
 echo "Completed Kubernetes Initial Setup"
 
 echo "Setting up master api-server..."
-"$join_command"
+$join_command
 
 echo "Setting up kubernetes configuration home..."
 mkdir -p "$HOME"/.kube

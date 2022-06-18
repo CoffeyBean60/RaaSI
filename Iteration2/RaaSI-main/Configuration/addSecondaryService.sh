@@ -17,13 +17,13 @@ read -r image_name
 echo "Enter the port number required for this image: "
 read -r port_num
 
-echo "Enter the minimum amount of memory needed for this service: "
+echo "Enter the minimum amount of memory needed for this service (In GB): "
 read -r memory_request
-memory_request="$memory_request"M
+memory_request="$memory_request"G
 
-echo "Enter the maximum amount of memory needed for this service: "
+echo "Enter the maximum amount of memory needed for this service (In GB): "
 read -r memory_limit
-memory_limit="$memory_limit"M
+memory_limit="$memory_limit"G
 
 echo "Enter the minimum amount of cpu needed for this service: "
 read -r cpu_request
@@ -81,3 +81,5 @@ spec:
       - mountPath: $mount_path
         name: $storage_app_name
 EOF
+
+kubectl apply -f "$deployment_name".yaml

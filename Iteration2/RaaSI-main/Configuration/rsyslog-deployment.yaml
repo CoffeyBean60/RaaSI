@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: rsyslog-deployment
+ labels:
+  app: rsyslog
+spec:
+ replicas: 0
+ selector:
+  matchLabels:
+   app: rsyslog
+ template:
+  metadata:
+   labels:
+    app: rsyslog
+  spec:
+   affinity:
+    nodeAffinity:
+     requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: device
+          operator: In
+          values:
+          - RedHat
+   volumes:
+    - name: rsyslog-storage
+      hostPath:
+       path: /gv0
+       type: Directory
+   containers:
+   - image: coffeybean60/rsyslog
+     name: rsyslog
+     ports:
+     - containerPort: 514
+     resources:
+      requests:
+       memory: 2G
+       cpu: 2
+      limits:
+       memory: 3G
+       cpu: 2
+     volumeMounts:
+      - mountPath: /gv0
+        name: rsyslog-storage

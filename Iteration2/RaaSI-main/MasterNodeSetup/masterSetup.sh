@@ -129,7 +129,7 @@ else
 	exit 1;
 fi
 
-echo "Enter the IP address of the Load Balancer: "
+echo "Enter the IP address of the Load Balancer (this is the VIP address setup in the RLB installation): "
 read -r LB_ip
 
 # validation
@@ -143,7 +143,7 @@ do
         val=$(../Validation/checkValidation.sh "$LB_ip" 1)
 done
 
-echo "Enter the port that the Load Balancer uses for the api-server: "
+echo "Enter the port that the Load Balancer uses for the api-server (this is typically 6443): "
 read -r LB_port
 
 # validation

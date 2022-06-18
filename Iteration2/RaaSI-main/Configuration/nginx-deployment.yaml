@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: nginx-deployment
+ labels:
+  app: nginx
+spec:
+ replicas: 0
+ selector:
+  matchLabels:
+   app: nginx
+ template:
+  metadata:
+   labels:
+    app: nginx
+  spec:
+   affinity:
+    nodeAffinity:
+     requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: device
+          operator: In
+          values:
+          - RedHat
+   volumes:
+    - name: nginx-storage
+      hostPath:
+       path: /gv0
+       type: Directory
+   containers:
+   - image: nginx
+     name: nginx
+     ports:
+     - containerPort: 80
+     resources:
+      requests:
+       memory: 1G
+       cpu: 2
+      limits:
+       memory: 2G
+       cpu: 2
+     volumeMounts:
+      - mountPath: /gv0
+        name: nginx-storage

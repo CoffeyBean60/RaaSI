@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: snort-deployment
+ labels:
+  app: snort
+spec:
+ replicas: 0
+ selector:
+  matchLabels:
+   app: snort
+ template:
+  metadata:
+   labels:
+    app: snort
+  spec:
+   affinity:
+    nodeAffinity:
+     requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: device
+          operator: In
+          values:
+          - RedHat
+   volumes:
+    - name: snort-storage
+      hostPath:
+       path: /gv0
+       type: Directory
+   containers:
+   - image: coffeybean60/snort
+     name: snort
+     ports:
+     - containerPort: 8080
+     resources:
+      requests:
+       memory: 2G
+       cpu: 2
+      limits:
+       memory: 3G
+       cpu: 2
+     volumeMounts:
+      - mountPath: /gv0
+        name: snort-storage

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: imagerec-deployment
+ labels:
+  app: imagerec
+spec:
+ replicas: 0
+ selector:
+  matchLabels:
+   app: imagerec
+ template:
+  metadata:
+   labels:
+    app: imagerec
+  spec:
+   affinity:
+    nodeAffinity:
+     requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: device
+          operator: In
+          values:
+          - RedHat
+   volumes:
+    - name: imagerec-storage
+      hostPath:
+       path: /gv0
+       type: Directory
+   containers:
+   - image: intel/image-recognition
+     name: imagerec
+     ports:
+     - containerPort: 1890
+     resources:
+      requests:
+       memory: 8G
+       cpu: 2
+      limits:
+       memory: 9G
+       cpu: 2
+     volumeMounts:
+      - mountPath: /gv0
+        name: imagerec-storage

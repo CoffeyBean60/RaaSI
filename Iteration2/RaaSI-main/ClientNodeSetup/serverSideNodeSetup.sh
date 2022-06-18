@@ -66,19 +66,20 @@ ssh -t "$client_user"@"$client_ip" "sudo sed -i $client_host_command /etc/hosts"
 
 echo "Creating RaaSI directory on client machine..."
 
-ssh "$client_user"@"$client_ip" "mkdir RaaSI"
+ssh "$client_user"@"$client_ip" "mkdir RaaSI; mkdir Validation"
 
 echo "Transfering clientSideNodeSetup.sh script to client machine..."
 
 scp clientSideNodeSetup.sh "$client_user"@"$client_ip":RaaSI/clientSideNodeSetup.sh
+scp ../Validation/checkValidation.sh "$client_user"@"$client_ip":Validation/checkValidation.sh
 
 echo "Making clientSideNodeSetup.sh executable..."
 
-ssh -t "$client_user"@"$client_ip" "sudo chmod +x RaaSI/clientSideNodeSetup.sh"
+ssh -t "$client_user"@"$client_ip" "sudo chmod +x RaaSI/clientSideNodeSetup.sh; sudo chmod +x Validation/checkValidation.sh"
 
 echo "Executing clientSideNodeSetup.sh on $client_hostname..."
 
-ssh -t "$client_user"@"$client_ip" "sudo RaaSI/clientSideNodeSetup.sh"
+ssh -t "$client_user"@"$client_ip" "cd RaaSI || exit; sudo ./clientSideNodeSetup.sh"
 
 ./glusterfsClientSetup.sh "$client_ip" "$client_user"
 
@@ -86,8 +87,10 @@ echo "$client_hostname joining the RaaSI cluster..."
 
 ssh -t "$client_user"@"$client_ip" "sudo $join_command"
 
+lclient_hostname=$(echo "$client_hostname" | awk '{print tolower($0)}')
+
 echo "Enabling device detection on node..."
-kubectl label nodes "$client_hostname" smarter-device-manager=enabled
+kubectl label nodes "$lclient_hostname" smarter-device-manager=enabled
 
 echo "Would you like to search for devices on this node (y/n)?"
 read -r response

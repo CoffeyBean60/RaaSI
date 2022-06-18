@@ -36,10 +36,8 @@ cert_key=$(kubeadm init phase upload-certs --upload-certs | tail -1)
 join_command="$join_command --control-plane --certificate-key $cert_key"
 echo "$join_command"
 
-ssh -t "$master_user"@"$master_ip" "mkdir tmp"
-scp secondaryMasterSetup.sh "$master_user"@"$master_ip":tmp/secondaryMasterSetup.sh
-ssh -t "$master_user"@"$master_ip" "sudo chmod +x tmp/secondaryMasterSetup.sh"
-ssh -t "$master_user"@"$master_ip" "sudo ./tmp/secondaryMasterSetup.sh $join_command"
-ssh -t "$master_user"@"$master_ip" "sudo rm tmp/secondaryMasterSetup.sh"
+scp -r ../../RaaSI-main "$master_user"@"$master_ip":RaaSI-main
+ssh -t "$master_user"@"$master_ip" "sudo chmod +x RaaSI-main/*/*.sh"
+ssh -t "$master_user"@"$master_ip" "cd RaaSI-main/MasterNodeSetup || exit; sudo ./secondaryMasterSetup.sh $join_command"
 
 echo "Node added to RaaSI"

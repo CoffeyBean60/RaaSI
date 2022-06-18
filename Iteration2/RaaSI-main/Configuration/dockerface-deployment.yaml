@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: dockerface-deployment
+ labels:
+  app: dockerface
+spec:
+ replicas: 0
+ selector:
+  matchLabels:
+   app: dockerface
+ template:
+  metadata:
+   labels:
+    app: dockerface
+  spec:
+   affinity:
+    nodeAffinity:
+     requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: device
+          operator: In
+          values:
+          - RedHat
+   volumes:
+    - name: dockerface-storage
+      hostPath:
+       path: /gv0
+       type: Directory
+   containers:
+   - image: coffeybean60/dockerface:latest
+     name: dockerface
+     ports:
+     - containerPort: 1890
+     resources:
+      requests:
+       memory: 10G
+       cpu: 2
+      limits:
+       memory: 11G
+       cpu: 2
+     volumeMounts:
+      - mountPath: /gv0
+        name: dockerface-storage
