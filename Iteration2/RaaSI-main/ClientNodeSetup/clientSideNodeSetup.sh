@@ -52,7 +52,7 @@ apt-get install -y docker.io
 apt-get install apt-transport-https curl
 apt-get install -y wget
 
-wget -O -https://download.gluster.org/pub/gluster/glusterfs/7/rsa.pub | apt-key add -
+wget https://download.gluster.org/pub/gluster/glusterfs/7/rsa.pub | apt-key add -
 
 echo "deb [arch=amd64] https://download.gluster.org/pub/gluster/glusterfs/7/LATEST/Debian/buster/amd64/apt buster main" > /etc/apt/sources.list.d/gluster.list
 
