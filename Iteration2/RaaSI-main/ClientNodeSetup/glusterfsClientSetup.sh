@@ -98,7 +98,7 @@ ssh -t "$client_user"@"$client_ip" "sudo chmod +x RaaSI/GlusterServerOpenSSL.sh;
 mkdir ca
 cd ca || exit
 echo "Collecting client CA from the storage server..."
-scp "$storage_user1"@"$storage1_ip":/etc/ssl/glusterfs-client.ca glusterfs-client.ca
+scp "$storage_user1"@"$storage1_ip":/etc/ssl/glusterfs.ca glusterfs-client.ca
 
 echo "Transfering glusterfs.ca to the client..."
 scp glusterfs-client.ca "$client_user"@"$client_ip":RaaSI/glusterfs.ca
