@@ -1,4 +1,4 @@
-![alt text](https://github.com/CoffeyBean60/RaaSI/blob/main/Papers/RaaSI_User_Guide.pdf?raw=true)
+![alt text](https://github.com/CoffeyBean60/RaaSI/blob/main/Papers/RaaSI_User_Guide.pdf)
 
 # RaaSI (Resiliency as a Service Infrastructure): Users Guide
 
