@@ -45,4 +45,4 @@ echo "Installing etcdctl..."
 apt-get update
 apt-get install etcd-client -y
 
-./doBackup.sh "$response" "$remote_user" "$remote_ip" &
+./doBackup.sh "$remote_user" "$remote_ip" &
