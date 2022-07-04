@@ -1,6 +1,6 @@
 # RaaSI (Resiliency as a Service Infrastructure): Users Guide
 
-##Introduction
+## Introduction
 The purpose of this document is to show readers the use cases of RaaSI and how
 to execute each use case. However, before the use cases of RaaSI are discussed,
 the reader must have an understanding of the architecture and modes of RaaSI,
@@ -8,7 +8,7 @@ along with the requirements needed for machines to belong to a RaaSI cluster.
 After this is discussed, the reader will see how to install RaaSI in section 2. In
 section 3 managing secondary services is discussed and in section 4 managing a
 primary service is shown. In order to download RaaSI please visit [2].
-###Architecture
+### Architecture
 The architecture of RaaSI is split into four distinct parts; the RaaSI Master
 Nodes (RMN), RaaSI Worker Nodes (RWN), RaaSI Load Balancer (RLB), and
 RaaSI Storage Nodes (RSN). The culmination of these parts make up the RaaSI
@@ -18,7 +18,7 @@ vide high-availability throughout the RaaSI cluster. The interconnection of the
 RaaSI cluster is shown in 1.
 Figure 1: RaaSI Architecture Diagram
 
-####RaaSI Master Nodes (RMN)
+#### RaaSI Master Nodes (RMN)
 Kubernetes (the underlying architecture of RaaSI) is designed as a Master Slave
 Architecture [6], where the Master Nodes monitor and manage the Worker
 Nodes in the cluster. In the RaaSI cluster, the Master Nodes are labeled as
@@ -399,7 +399,7 @@ ondary services that are supporting them should begin execution. The ability
 to monitor these primary services and execute secondary services when their
 attached primary service is degraded is done through the primary service mon-
 itoring API.
-###Primary Service Monitor API
+### Primary Service Monitor API
 The primary service monitoring API is a derivation from a judging software
 designed for cybersecurity competition to monitor the health of services [1].
 The software for the primary service monitoring API is written in Python 3,
