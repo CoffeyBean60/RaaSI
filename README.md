@@ -1,4 +1,5 @@
 ![RaaSI: Users Guide](https://github.com/CoffeyBean60/RaaSI/blob/main/Papers/RaaSI_User_Guide.pdf)
+![RaaSI: Developers Guide](https://github.com/CoffeyBean60/RaaSI/blob/main/Papers/RaaSI_Developer_Guide.pdf)
 
 # RaaSI (Resiliency as a Service Infrastructure): Users Guide
 
