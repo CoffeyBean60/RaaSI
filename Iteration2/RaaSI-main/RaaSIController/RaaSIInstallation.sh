@@ -14,7 +14,7 @@ read -r result
 if [[ "1" == "$result" ]]; then
 	echo "Executing Install Standard Master Controller"
 	cd ../MasterNodeSetup || exit
-	./standardMasterSetup.sh
+	./standardMasterNodeSetup.sh
 	cd ../RaaSIController || exit;
 elif [[ "2" == "$result" ]]; then
 	echo "Executing Install Load Balancers"
