@@ -84,6 +84,7 @@ def poll():
 
 @app.task(soft_time_limit=6)
 def poll_dns(poll_timeout, service_id, service_connection, service_request):
+	print("poll dns")
 	# get deployments associated with service through service_id
 	#deployments = execute_db_query('select * from deployment where service_id = ?', [service_id])
 	#check if the service is running
