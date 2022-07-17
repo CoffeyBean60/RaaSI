@@ -9,6 +9,7 @@ then
     cd ./setup || exit
 fi
 sudo apt-get install python3-pip rabbitmq-server -y
+sudo apt-get install libcurl4-gnutls-dev librtmp-dev -y
 sudo pip3 install -r requirements.txt
 cd ../judge || exit
 export FLASK_APP=judge.py
