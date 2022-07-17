@@ -5,7 +5,7 @@ do
 
 	echo "Testing the PSM API dist script..."
 
-	mapfile -t node_ip < <(kubectl get nodes -o wide | awk -v x=6 '{if(NR!=1 && $3=="control-plane,master") print $x}')
+	mapfile -t node_ip < <(kubectl get nodes -o wide | awk -v x=6 '{if(NR!=1 && $3=="control-plane") print $x}')
 
 	node_count="${#node_ip[@]}"
 
