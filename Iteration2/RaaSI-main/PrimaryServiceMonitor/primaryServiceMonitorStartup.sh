@@ -44,7 +44,7 @@ do
   done
   
   echo "Updating master node..."
-  ssh "$master_user"@"$master_ip" "apt update"
+  ssh -t "$master_user"@"$master_ip" "sudo apt update"
  
   echo "Creating RaaSI directory on the master node..."
   ssh "$master_user"@"$master_ip" "mkdir RaaSI"
