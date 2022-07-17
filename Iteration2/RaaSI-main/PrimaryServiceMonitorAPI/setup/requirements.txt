@@ -4,3 +4,4 @@ dnspython
 requests
 celery>=5.2.2
 pyyaml
+pycurl
