@@ -10,7 +10,7 @@ read -r result
 if [[ "1" == "$result" ]]; then
         echo "Executing Install the Primary Service Monitoring API"
         cd ../PrimaryServiceMonitor || exit
-	      ./primaryServiceMonitorSetup.sh
+	      ./primaryServiceMonitorStartup.sh
 	      exit 0;
 elif [[ "2" == "$result" ]]; then
         echo "Executing Update the Primary Service Monitoring API"
