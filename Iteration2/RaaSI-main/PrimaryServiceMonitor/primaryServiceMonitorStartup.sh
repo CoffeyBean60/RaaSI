@@ -42,21 +42,24 @@ do
         # validation
         val=$(../Validation/checkValidation.sh "$master_user" 2)
   done
+  
+  echo "Updating master node..."
+  ssh "$master_user"@"$master_ip" "apt update"
  
   echo "Creating RaaSI directory on the master node..."
   ssh "$master_user"@"$master_ip" "mkdir RaaSI"
   
   echo "Copying RaaSI to the master node..."
-  scp -r ../../RaaSI-main "$master_user"@"$master_ip":/RaaSI/RaaSI-main
+  scp -r ../../RaaSI-main "$master_user"@"$master_ip":RaaSI/RaaSI-main
   
   echo "Starting Primary Service API Splitter..."
-  ssh -t "$master_user"@"$master_ip" "cd /RaaSI/RaaSI-main/PrimaryServiceMonitor && sudo chmod +x primaryServiceSplitter.sh && sudo ./primaryServiceSplitter.sh &"
+  ssh -t "$master_user"@"$master_ip" "cd RaaSI/RaaSI-main/PrimaryServiceMonitor && sudo chmod +x primaryServiceSplitter.sh && sudo ./primaryServiceSplitter.sh &"
   
   echo "Installing Primary Service API..."
-  ssh -t "$master_user"@"$master_ip" "cd /RaaSI/RaaSI-main/PrimaryServiceMonitorAPI/setup && sudo chmod +x install.sh && sudo ./install.sh"
+  ssh -t "$master_user"@"$master_ip" "cd RaaSI/RaaSI-main/PrimaryServiceMonitorAPI/setup && sudo chmod +x install.sh && sudo ./install.sh"
    
   echo "Starting Primary Service API..."
-  ssh -t "$master_user"@"$master_ip" "cd /RaaSI/RaaSI-main/PrimaryServiceMonitorAPI && sudo chmod +x judge.sh && sudo ./judge.sh &"
+  ssh -t "$master_user"@"$master_ip" "cd RaaSI/RaaSI-main/PrimaryServiceMonitorAPI && sudo chmod +x judge.sh && sudo ./judge.sh &"
   
   echo "Is there another master node to add? (Y/N)"
   read -r response
@@ -71,6 +74,9 @@ do
 	  val=$(../Validation/checkValidation.sh "$response" 0)
   done
 done
+
+echo "Updating local node..."
+apt update
 
 echo "Starting Primary Service API Splitter on local node..."
 chmod +x primaryServiceSplitter.sh
