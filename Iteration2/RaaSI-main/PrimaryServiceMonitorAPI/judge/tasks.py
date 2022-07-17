@@ -3,8 +3,6 @@
 # Project Home: https://github.com/cobbr/Judge
 # License: GNU GPLv3
 
-import nmap
-
 from celery import Celery
 from celery.exceptions import SoftTimeLimitExceeded
 
@@ -27,7 +25,6 @@ from db import execute_db_query
 #crl = pycurl.Curl()
 #crl.setopt(crl.URL, "http://MON.sparky.tech")
 #crl.setopt(crl.WRITEDATA, b_obj)
-nmscan = nmap.PortScanner()
 app = Celery('tasks', broker='amqp://')
 app.config_from_object('config')
 
@@ -163,8 +160,8 @@ def poll_web(poll_timeout, service_id, service_type, service_connection, service
 	         		for deployment in deployments:
 	         			halt(deployment)
 	         		execute_db_query('update service set service_running = 1 where service_id = ?', [service_id])
-	            match = True
-	            break
+	         		match = True
+	         		break
 	      if not match:
 	         if service_running == 1:
 	         	# execute deployment
@@ -196,6 +193,7 @@ def poll_web(poll_timeout, service_id, service_type, service_connection, service
 # TODO: improved exception handling for FTP
 @app.task(soft_time_limit=6)
 def poll_ftp(poll_timeout, service_id, service_connection, service_request):
+	print("poll ftp")
 	#if scan_port(service_connection,'21',[]):
         #        for team in execute_db_query('select * from team'):
         #        	execute_db_query('insert into poll(poll_score, service_id, team_id, service_type_name) values(1,?,?,?)', [service_id,team['team_id'],'ftp'])
@@ -205,6 +203,7 @@ def poll_ftp(poll_timeout, service_id, service_connection, service_request):
 	
 @app.task(soft_time_limit=6)
 def poll_db(poll_timeout, service_id, service_connection, service_request):
+	print("poll db")
 	#if scan_port(service_connection,'5432',[]):
         #        for team in execute_db_query('select * from team'):
         #        	execute_db_query('insert into poll(poll_score, service_id, team_id, service_type_name) values(1,?,?,?)', [service_id,team['team_id'],'db'])
@@ -215,6 +214,7 @@ def poll_db(poll_timeout, service_id, service_connection, service_request):
 # TODO: Improved exception handling for mail
 @app.task(soft_time_limit=6)
 def poll_mail(poll_timeout, service_id, service_connection, service_request):
+	print("poll mail")
 	#print('entering mail')
 	#try:
 	#	data = dns.resolver.query(service_connection, dns.rdatatype.A)

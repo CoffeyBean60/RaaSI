@@ -31,7 +31,7 @@ def database_populate(services_filename):
         , [service['service_type_name'], service['service_name'], service['service_connection'], service['service_request'],service['service_type_name']])
     for deployment in cfg['deployments']:
         execute_db_query('insert into deployment(service_id, service_name, deployment_name, deployment_device, deployment_percentage) '
-        +'VALUES((select service_id from service where service_name = ?),?,?,?,?', [deployment['service_name'], deployment['service_name'], deployment['deployment_name'], deployment['deployment_device'], deployment['deployment_percentage']])
+        +'VALUES((select service_id from service where service_name = ?),?,?,?,?)', [deployment['service_name'], deployment['service_name'], deployment['deployment_name'], deployment['deployment_device'], deployment['deployment_percentage']])
 
 def database_connect():
     """
@@ -54,7 +54,7 @@ def execute_db_query(query, args=None):
     conn = database_connect()
     cur = conn.cursor()
     if(args):
-        cur.execute(query, args)
+    	cur.execute(query, args)
     else:
         cur.execute(query)
     conn.commit()
