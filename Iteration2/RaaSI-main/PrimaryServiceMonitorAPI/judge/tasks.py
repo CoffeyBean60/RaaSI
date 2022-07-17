@@ -70,7 +70,6 @@ def poll():
                 poll_dns(timeout, service['service_id'], service['service_connection'], service['service_request'], service['service_running'])
             # Perform HTTP(S) Request
             elif type == 'http' or type == 'https':
-                print("correct type")
                 poll_web(timeout, row['service_id'], row['service_type_name'], row['service_connection'], row['service_request'], row['service_active'],type)
             # Perform FTP Request
             elif type == 'ftp':
