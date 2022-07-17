@@ -67,4 +67,4 @@ INSERT INTO service_type(service_type_name) VALUES('mysql');
 INSERT INTO service_type(service_type_name) VALUES('rdp');
 INSERT INTO service_type(service_type_name) VALUES('pop');
 INSERT INTO service_type(service_type_name) VALUES('smb');
-INSERT INTO service_type(service_type_name) VALUES('ad');u
+INSERT INTO service_type(service_type_name) VALUES('ad');

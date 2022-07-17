@@ -268,4 +268,4 @@ def go():
     pollThread = Thread(target=poll_forever)
     pollThread.setDaemon(True)
     pollThread.start()
-    app.run(host='www.RaaSI.psm')
+    app.run()

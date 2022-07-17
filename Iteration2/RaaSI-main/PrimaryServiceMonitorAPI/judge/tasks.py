@@ -59,7 +59,7 @@ def poll():
     """
     Iterates over all the active services in the database and attempt to execute that service's functionality. The success or failure of the service and any error messages are stored in the database.
     """
-    for service in execute_db_query('select * from service where service_active = 1'):
+    for service in execute_db_query('select * from service'):
         sleep(2)
         # Grab the service from the database
         row = execute_db_query('select * from service_type join service ON (service_type.service_type_id = service.service_type_id) where service.service_type_id = ?', [service['service_type_id']])[0]
@@ -70,7 +70,8 @@ def poll():
                 poll_dns(timeout, service['service_id'], service['service_connection'], service['service_request'], service['service_running'])
             # Perform HTTP(S) Request
             elif type == 'http' or type == 'https':
-                poll_web(timeout, service['service_id'], row['service_type_name'], service['service_connection'], service['service_request'], service['service_running'],type)
+                print("correct type")
+                poll_web(timeout, row['service_id'], row['service_type_name'], row['service_connection'], row['service_request'], row['service_active'],type)
             # Perform FTP Request
             elif type == 'ftp':
                 poll_ftp(timeout, service['service_id'], service['service_connection'], service['service_request'])
@@ -118,7 +119,7 @@ def poll_web(poll_timeout, service_id, service_type, service_connection, service
 	         	# execute deployment
 	         	for deployment in deployments:
 	         		deploy(deployment)
-	         	execute_db_query('update service set service_running = 0 where service_id = ?', [service_id])
+	         	execute_db_query('update service set service_active = 0 where service_id = ?', [service_id])
 	         return
 	      except requests.exception.ConnectionError as e:
 	         execute_db_query('insert into error(service_id, error_message) values(?,?)', [service_id, 'HTTP(S) Request resulted in a ConnectionError exception: ' + repr(e)])
@@ -126,7 +127,7 @@ def poll_web(poll_timeout, service_id, service_type, service_connection, service
 	         	# execute deployment
 	         	for deployment in deployments:
 	         		deploy(deployment)
-	         	execute_db_query('update service set service_running = 0 where service_id = ?', [service_id])
+	         	execute_db_query('update service set service_active = 0 where service_id = ?', [service_id])
 	         return
 	      except requests.exception.HTTPError as e:
 	         execute_db_query('insert into error(service_id, error_message) values(?,?)', [service_id, 'HTTP(S) Request resulted in a HTTPError exception: ' + repr(e)])
@@ -134,7 +135,7 @@ def poll_web(poll_timeout, service_id, service_type, service_connection, service
 	         	# execute deployment
 	         	for deployment in deployments:
 	         		deploy(deployment)
-	         	execute_db_query('update service set service_running = 0 where service_id = ?', [service_id])
+	         	execute_db_query('update service set service_active = 0 where service_id = ?', [service_id])
 	         return
 	      except requests.exception.TooManyRedirects as e:
 	         execute_db_query('insert into error(service_id, error_message) values(?,?)', [service_id, 'HTTP(S) Request resulted in a TooManyRedirects exception: ' + repr(e)])
@@ -150,31 +151,29 @@ def poll_web(poll_timeout, service_id, service_type, service_connection, service
 	         	# execute deployment
 	         	for deployment in deployments:
 	         		deploy(deployment)
-	         	execute_db_query('update service set service_running = 0 where service_id = ?', [service_id])
+	         	execute_db_query('update service set service_active = 0 where service_id = ?', [service_id])
 	         return
 	      match = False
-	      for team in execute_db_query('select * from team'):
-	         if service_request in result:
-	         	if service_running == 0:
-	         		# execute halt
-	         		for deployment in deployments:
-	         			halt(deployment)
-	         		execute_db_query('update service set service_running = 1 where service_id = ?', [service_id])
-	         		match = True
-	         		break
+	      if service_request in result:
+	         if service_running == 0:
+	         	# execute halt
+	         	for deployment in deployments:
+	         		halt(deployment)
+	         	execute_db_query('update service set service_active = 1 where service_id = ?', [service_id])
+	         match = True
 	      if not match:
 	         if service_running == 1:
 	         	# execute deployment
 	         	for deployment in deployments:
 	         		deploy(deployment)
-	         	execute_db_query('update service set service_running = 0 where service_id = ?', [service_id])
+	         	execute_db_query('update service set service_active = 0 where service_id = ?', [service_id])
 	   except Exception as e:
 	      execute_db_query('insert into error(service_id, error_message) values(?,?)', [service_id, 'HTTP(S) Request resulted in exception: ' + repr(e)])
 	      if service_running == 1:
 	      	 # execute deployment
 	         for deployment in deployments:
 	         	deploy(deployment)
-	         execute_db_query('update service set service_running = 0 where service_id = ?', [service_id])
+	         execute_db_query('update service set service_active = 0 where service_id = ?', [service_id])
 	      pass
 	except SoftTimeLimitExceeded:
 	   execute_db_query('insert into error(service_id, error_message) values(?,?)', [service_id, 'HTTP(S) Request resulted in exception: ' + repr(e)])
@@ -182,7 +181,7 @@ def poll_web(poll_timeout, service_id, service_type, service_connection, service
 	         # execute deployment
 	         for deployment in deployments:
 	         	deploy(deployment)
-	         execute_db_query('update service set service_running = 0 where service_id = ?', [service_id])
+	         execute_db_query('update service set service_active = 0 where service_id = ?', [service_id])
 #	if curlWeb(service_connection,service_request,'http'):
 #                for team in execute_db_query('select * from team'):
 #                	execute_db_query('insert into poll(poll_score, service_id, team_id, service_type_name) values(1,?,?,?)', [service_id,team['team_id'],type1])

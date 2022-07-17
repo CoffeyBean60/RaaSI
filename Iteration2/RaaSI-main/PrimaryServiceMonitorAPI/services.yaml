@@ -9,19 +9,19 @@
 
 services:
   - service_type_name       : http
-    service_name            : Google
-    service_connection      : google.com
-    service_request         : home
+    service_name            : Website
+    service_connection      : 192.168.7.119
+    service_request         : Apache
     
 deployments:
-  - deployment_name         : example-deployment
+  - deployment_name         : rsyslog-deployment
     deployment_device       : RedHat
     deployment_percentage   : 50
-    service_name            : Example
+    service_name            : Website
     
-  - deployment_name         : example2-deployment
+  - deployment_name         : snort-deployment
     deployment_device       : RedHat
     deployment_percentage   : 50
-    service_name            : Example
+    service_name            : Website
     
     
