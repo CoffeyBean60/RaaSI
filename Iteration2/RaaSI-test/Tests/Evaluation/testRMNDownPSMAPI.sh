@@ -27,7 +27,7 @@ ssh -t "$psn_user"@"$psn_ip" "sudo systemctl stop apache2"
 
 sleep 15
 
-kubectl get deployment $deployment
+kubectl get deployment "$deployment"
 
 echo "Starting primary service back up."
 
@@ -35,4 +35,4 @@ ssh -t "$psn_user"@"$psn_ip" "sudo systemctl start apache2"
 
 sleep 15
 
-kubectl get deployment $deployment
+kubectl get deployment "$deployment"
